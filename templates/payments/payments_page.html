@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <title>CraftLink · Payments</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* ----- ROOT VARIABLES (matching dashboard) ----- */
+        :root {
+            --primary: #2a6f6f;
+            --primary-light: #3d8f8f;
+            --primary-dark: #1d4f4f;
+            --gradient: linear-gradient(145deg, #1d4f4f, #3d9e9e);
+            --bg: #eef2f7;
+            --card-bg: rgba(255, 255, 255, 0.65);
+            --glass-bg: rgba(255, 255, 255, 0.5);
+            --border: rgba(45, 75, 75, 0.12);
+            --text-dark: #1e2b2b;
+            --text-light: #3f5555;
+            --text-muted: #6b8a8a;
+            --danger: #c94a4a;
+            --success: #2a7a5a;
+            --warning: #f39c12;
+            --radius: 20px;
+            --shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+            --glow: 0 0 30px rgba(42, 111, 111, 0.08);
+        }
+
+        /* ----- RESET & BASE ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            color: var(--text-dark);
+            padding: 20px;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(42, 111, 111, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(42, 111, 111, 0.03) 0%, transparent 50%);
+        }
+
+        /* ----- MAIN CONTENT ----- */
+        .main-content {
+            width: 100%;
+            max-width: 1200px;
+            padding: 30px 40px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.25s;
+            margin-bottom: 20px;
+        }
+
+        .back-link:hover {
+            color: var(--primary);
+            transform: translateX(-4px);
+        }
+
+        /* ----- PAYMENTS CONTENT ----- */
+        .payments-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* ----- BALANCE & QUICK ACTIONS ----- */
+        .balance-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .balance-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .balance-card .balance-label {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .balance-card .balance-amount {
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 8px 0 4px;
+        }
+
+        .balance-card .balance-sub {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .balance-card .balance-sub i {
+            color: var(--success);
+        }
+
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .quick-action-btn {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: var(--shadow);
+            text-decoration: none;
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quick-action-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+            border-color: rgba(42, 111, 111, 0.2);
+        }
+
+        .quick-action-btn .action-icon {
+            font-size: 28px;
+            color: var(--primary-light);
+        }
+
+        .quick-action-btn .action-label {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .quick-action-btn .action-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* ----- RECEIPTS SECTION ----- */
+        .receipts-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .receipts-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .receipts-header h3 {
+            color: var(--text-dark);
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .receipts-header .receipt-count {
+            background: rgba(42, 111, 111, 0.1);
+            color: var(--primary);
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* ----- RECEIPT LIST ----- */
+        .receipts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .receipts-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .receipts-list::-webkit-scrollbar-track {
+            background: var(--bg);
+            border-radius: 10px;
+        }
+
+        .receipts-list::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .receipt-item {
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 18px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .receipt-item:hover {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: rgba(42, 111, 111, 0.2);
+            transform: translateX(4px);
+        }
+
+        .receipt-item .receipt-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .receipt-item .receipt-info .receipt-id {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .receipt-item .receipt-info .receipt-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .receipt-item .receipt-info .receipt-meta .meta-item {
+            font-size: 12px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .receipt-item .receipt-info .receipt-meta .meta-item i {
+            font-size: 13px;
+            color: var(--primary-light);
+        }
+
+        .receipt-item .receipt-amount {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-dark);
+            text-align: right;
+            padding-left: 20px;
+        }
+
+        .receipt-item .receipt-amount .currency {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .receipt-item .receipt-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .receipt-item .receipt-status.success {
+            background: rgba(42, 122, 90, 0.1);
+            color: var(--success);
+        }
+
+        .receipt-item .receipt-status.pending {
+            background: rgba(243, 156, 18, 0.1);
+            color: var(--warning);
+        }
+
+        .receipt-item .receipt-status.failed {
+            background: rgba(201, 74, 74, 0.1);
+            color: var(--danger);
+        }
+
+        /* ----- EMPTY STATE ----- */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 60px;
+            color: var(--primary-light);
+            opacity: 0.3;
+            margin-bottom: 16px;
+        }
+
+        .empty-state h4 {
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+        }
+
+        /* ----- LOADING ----- */
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            gap: 12px;
+            color: var(--text-muted);
+        }
+
+        .loading-spinner i {
+            font-size: 24px;
+            color: var(--primary-light);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ----- MESSAGE AREA ----- */
+        .message-area {
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .message-area.show {
+            display: block;
+        }
+
+        .message-area.success {
+            background: rgba(42, 122, 90, 0.08);
+            color: var(--success);
+            border: 1px solid rgba(42, 122, 90, 0.2);
+        }
+
+        .message-area.error {
+            background: rgba(201, 74, 74, 0.08);
+            color: var(--danger);
+            border: 1px solid rgba(201, 74, 74, 0.2);
+        }
+
+        .message-area.info {
+            background: rgba(42, 111, 111, 0.08);
+            color: var(--primary);
+            border: 1px solid rgba(42, 111, 111, 0.2);
+        }
+
+        /* ----- PURCHASE MODAL ----- */
+        .purchase-modal {
+            max-width: 520px;
+        }
+
+        .purchase-modal .modal-body {
+            padding: 8px 0;
+        }
+
+        .purchase-modal .form-group {
+            margin-bottom: 16px;
+        }
+
+        .purchase-modal .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 6px;
+        }
+
+        .purchase-modal .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: #ffffff;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
+            color: var(--text-dark);
+        }
+
+        .purchase-modal .form-group input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(42, 111, 111, 0.1);
+        }
+
+        .purchase-modal .form-group .input-hint {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .purchase-modal .btn-purchase {
+            width: 100%;
+            padding: 14px;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 8px;
+            box-shadow: 0 4px 15px rgba(42, 111, 111, 0.2);
+        }
+
+        .purchase-modal .btn-purchase:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(42, 111, 111, 0.35);
+        }
+
+        .purchase-modal .btn-purchase:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .purchase-modal .connect-packages {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .purchase-modal .connect-packages .package-option {
+            padding: 14px 12px;
+            border-radius: 12px;
+            border: 2px solid var(--border);
+            background: #ffffff;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s;
+            position: relative;
+        }
+
+        .purchase-modal .connect-packages .package-option:hover {
+            border-color: var(--primary-light);
+            background: rgba(42, 111, 111, 0.04);
+            transform: translateY(-2px);
+        }
+
+        .purchase-modal .connect-packages .package-option.selected {
+            border-color: var(--primary);
+            background: rgba(42, 111, 111, 0.08);
+            box-shadow: 0 0 0 3px rgba(42, 111, 111, 0.1);
+        }
+
+        .purchase-modal .connect-packages .package-option .package-connects {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .purchase-modal .connect-packages .package-option .package-price {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .purchase-modal .connect-packages .package-option .package-best {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--success);
+            color: white;
+            font-size: 9px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .purchase-modal .connect-packages .package-option .package-loading {
+            font-size: 12px;
+            color: var(--text-muted);
+            padding: 4px;
+        }
+
+        /* ----- MODAL OVERLAY ----- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            animation: fadeModal 0.25s ease;
+        }
+
+        @keyframes fadeModal {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 24px;
+            padding: 32px;
+            animation: slideUp 0.25s ease;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes slideUp {
+            0% { transform: translateY(20px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-content .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-content .modal-header h3 {
+            font-size: 20px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-content .modal-header .close-modal {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: 0.2s;
+            line-height: 1;
+        }
+
+        .modal-content .modal-header .close-modal:hover {
+            color: var(--danger);
+        }
+
+        /* ----- RESPONSIVE ----- */
+        @media (max-width: 1024px) {
+            .main-content {
+                padding: 20px;
+            }
+
+            .balance-section {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 16px;
+            }
+
+            .balance-card .balance-amount {
+                font-size: 32px;
+            }
+
+            .quick-actions-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .receipt-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .receipt-item .receipt-amount {
+                text-align: left;
+                padding-left: 0;
+                width: 100%;
+            }
+
+            .receipts-list {
+                max-height: 350px;
+            }
+
+            .purchase-modal .connect-packages {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 12px;
+            }
+
+            .balance-card {
+                padding: 20px;
+            }
+
+            .balance-card .balance-amount {
+                font-size: 28px;
+            }
+
+            .quick-actions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .receipt-item {
+                padding: 14px 16px;
+            }
+
+            .receipt-item .receipt-info .receipt-meta {
+                gap: 8px;
+                flex-wrap: wrap;
+            }
+
+            .modal-content {
+                padding: 24px;
+            }
+
+            .purchase-modal .connect-packages {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ----- SCROLLBAR ----- */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-light);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+
+        <!-- Message Area -->
+        <div id="messageArea" class="message-area"></div>
+
+        <!-- Payments Content -->
+        <div class="payments-content">
+            <!-- Balance & Quick Actions -->
+            <div class="balance-section">
+                <!-- Balance Card -->
+                <div class="balance-card">
+                    <div class="balance-label"><i class="fas fa-wallet" style="color: var(--primary-light);"></i> Available Balance</div>
+                    <div class="balance-amount">KSH0.00</div>
+                    <div class="balance-sub"><i class="fas fa-check-circle"></i> Ready to use</div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions-grid">
+                    <div class="quick-action-btn" onclick="openPurchaseModal()">
+                        <div class="action-icon"><i class="fas fa-shopping-cart"></i></div>
+                        <div class="action-label">Buy Connects</div>
+                        <div class="action-desc">Purchase connects to apply for jobs</div>
+                    </div>
+                    <div class="quick-action-btn" onclick="showMessage('Withdrawal feature coming soon!', 'info')">
+                        <div class="action-icon"><i class="fas fa-arrow-up"></i></div>
+                        <div class="action-label">Withdraw</div>
+                        <div class="action-desc">Withdraw your earnings</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Receipts Section -->
+            <div class="receipts-section">
+                <div class="receipts-header">
+                    <h3><i class="fas fa-receipt" style="color: var(--primary-light);"></i> Payment History</h3>
+                    <span class="receipt-count" id="receiptCount">0 receipts</span>
+                </div>
+
+                <div class="receipts-list" id="receiptsList">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner"></i>
+                        <span>Loading receipts...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ===== PURCHASE CONNECTS MODAL ===== -->
+    <div class="modal-overlay" id="purchaseModal">
+        <div class="modal-content purchase-modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-shopping-cart" style="color: var(--primary-light);"></i> Purchase Connects</h3>
+                <button class="close-modal" onclick="closePurchaseModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="purchaseForm">
+                    <div class="form-group">
+                        <label>Select Package</label>
+                        <div class="connect-packages" id="connectPackages">
+                            <div class="loading-spinner" style="grid-column: 1 / -1; padding: 20px;">
+                                <i class="fas fa-spinner"></i>
+                                <span>Loading packages...</span>
+                            </div>
+                        </div>
+                        <input type="hidden" id="selectedConnects" value="" />
+                        <input type="hidden" id="selectedAmount" value="" />
+                        <input type="hidden" id="selectedConnectId" value="" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phone Number (M-Pesa)</label>
+                        <input 
+                            type="tel" 
+                            id="phoneNumber" 
+                            placeholder="0712345678" 
+                            required
+                        />
+                        <div class="input-hint">Enter the phone number registered with M-Pesa</div>
+                    </div>
+
+                    <button type="submit" class="btn-purchase" id="purchaseBtn">
+                        <i class="fas fa-lock"></i> Pay Now
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== RECEIPT DETAIL MODAL ===== -->
+    <div class="modal-overlay" id="receiptModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-receipt" style="color: var(--primary-light);"></i> Receipt Details</h3>
+                <button class="close-modal" onclick="closeReceiptModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="receiptDetails">
+                    <!-- Receipt details will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        (function() {
+            "use strict";
+
+            // ----- DOM REFERENCES -----
+            const messageArea = document.getElementById('messageArea');
+            const receiptsList = document.getElementById('receiptsList');
+            const receiptCount = document.getElementById('receiptCount');
+            const purchaseModal = document.getElementById('purchaseModal');
+            const purchaseForm = document.getElementById('purchaseForm');
+            const purchaseBtn = document.getElementById('purchaseBtn');
+            const phoneNumber = document.getElementById('phoneNumber');
+            const connectPackages = document.getElementById('connectPackages');
+            const selectedConnects = document.getElementById('selectedConnects');
+            const selectedAmount = document.getElementById('selectedAmount');
+            const selectedConnectId = document.getElementById('selectedConnectId');
+            const receiptModal = document.getElementById('receiptModal');
+            const receiptDetails = document.getElementById('receiptDetails');
+
+            // ----- API ENDPOINTS -----
+            const API = {
+                getConnects: '/get/connects',
+                paymentsInfo: '/payments/info',
+                purchaseConnects: '/payments/purchase/connects'
+            };
+
+            // ----- STATE -----
+            let payments = [];
+            let isLoading = false;
+            let connectPackagesData = [];
+            let selectedPackage = null;
+
+            // ----- UTILITY FUNCTIONS -----
+            function showMessage(message, type = 'info') {
+                messageArea.textContent = message;
+                messageArea.className = `message-area show ${type}`;
+                clearTimeout(window.messageTimeout);
+                window.messageTimeout = setTimeout(() => {
+                    messageArea.classList.remove('show');
+                }, 5000);
+            }
+
+            function formatCurrency(amount) {
+                return 'KSH' + parseFloat(amount).toFixed(2);
+            }
+
+            function formatDate(dateString) {
+                if (!dateString) return 'N/A';
+                try {
+                    const date = new Date(dateString);
+                    if (isNaN(date.getTime())) return 'N/A';
+                    return date.toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                } catch (e) {
+                    return 'N/A';
+                }
+            }
+
+            function getStatusBadge(status) {
+                const statusMap = {
+                    'completed': 'success',
+                    'success': 'success',
+                    'pending': 'pending',
+                    'failed': 'failed'
+                };
+                const className = statusMap[status?.toLowerCase()] || 'success';
+                const displayText = status ? status.charAt(0).toUpperCase() + status.slice(1) : 'Completed';
+                return `<span class="receipt-status ${className}">${displayText}</span>`;
+            }
+
+            function findBestValuePackage(packages) {
+                if (!packages || packages.length === 0) return null;
+                // Find package with lowest cost per connect
+                let best = packages[0];
+                let bestRatio = best.connects_cost / best.connects;
+                for (let i = 1; i < packages.length; i++) {
+                    const ratio = packages[i].connects_cost / packages[i].connects;
+                    if (ratio < bestRatio) {
+                        bestRatio = ratio;
+                        best = packages[i];
+                    }
+                }
+                return best;
+            }
+
+            // ----- LOAD CONNECTS PACKAGES -----
+            async function loadConnectsPackages() {
+                try {
+                    connectPackages.innerHTML = `
+                        <div class="loading-spinner" style="grid-column: 1 / -1; padding: 20px;">
+                            <i class="fas fa-spinner"></i>
+                            <span>Loading packages...</span>
+                        </div>
+                    `;
+
+                    const response = await fetch(API.getConnects, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                        return;
+                    }
+
+                    if (data.success && data.connects && data.connects.length > 0) {
+                        connectPackagesData = data.connects;
+                        renderConnectPackages(connectPackagesData);
+                    } else {
+                        connectPackagesData = [];
+                        connectPackages.innerHTML = `
+                            <div style="grid-column: 1 / -1; text-align: center; padding: 20px; color: var(--text-muted);">
+                                <i class="fas fa-exclamation-circle" style="font-size: 24px; display: block; margin-bottom: 8px;"></i>
+                                <p>No connects packages available.</p>
+                                <p style="font-size: 13px; margin-top: 4px;">Please check back later.</p>
+                            </div>
+                        `;
+                        if (data.message) {
+                            showMessage(data.message, 'info');
+                        }
+                    }
+                } catch (error) {
+                    connectPackages.innerHTML = `
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 20px; color: var(--danger);">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 24px; display: block; margin-bottom: 8px;"></i>
+                            <p>Failed to load packages.</p>
+                            <p style="font-size: 13px; margin-top: 4px;">Please refresh and try again.</p>
+                        </div>
+                    `;
+                }
+            }
+
+            // ----- RENDER CONNECT PACKAGES -----
+            function renderConnectPackages(packages) {
+                if (!packages || packages.length === 0) {
+                    connectPackages.innerHTML = `
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 20px; color: var(--text-muted);">
+                            <i class="fas fa-exclamation-circle" style="font-size: 24px; display: block; margin-bottom: 8px;"></i>
+                            <p>No connects packages available.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const bestPackage = findBestValuePackage(packages);
+                let html = '';
+
+                packages.forEach((pkg, index) => {
+                    const isBest = bestPackage && pkg.connect_id === bestPackage.connect_id;
+                    const connects = pkg.connects || 0;
+                    const cost = pkg.connects_cost || 0;
+                    const pricePerConnect = connects > 0 ? (cost / connects).toFixed(2) : 0;
+
+                    html += `
+                        <div class="package-option ${index === 0 ? 'selected' : ''}" 
+                             data-connects="${connects}" 
+                             data-price="${cost}" 
+                             data-connect-id="${pkg.connect_id}"
+                             onclick="selectPackage(this)">
+                            <div class="package-connects">${connects}</div>
+                            <div class="package-price">${formatCurrency(cost)}</div>
+                            <div style="font-size: 10px; color: var(--text-muted); margin-top: 4px;">
+                                ${pricePerConnect}/connect
+                            </div>
+                            ${isBest ? '<div class="package-best">BEST VALUE</div>' : ''}
+                        </div>
+                    `;
+                });
+
+                connectPackages.innerHTML = html;
+
+                // Select the first package by default
+                const firstPackage = connectPackages.querySelector('.package-option');
+                if (firstPackage) {
+                    selectPackage(firstPackage);
+                }
+            }
+
+            // ----- PACKAGE SELECTION -----
+            window.selectPackage = function(element) {
+                document.querySelectorAll('.package-option').forEach(el => {
+                    el.classList.remove('selected');
+                });
+                element.classList.add('selected');
+                
+                selectedConnects.value = element.dataset.connects;
+                selectedAmount.value = element.dataset.price;
+                selectedConnectId.value = element.dataset.connectId;
+                selectedPackage = {
+                    connects: parseInt(element.dataset.connects),
+                    cost: parseFloat(element.dataset.price),
+                    connectId: element.dataset.connectId
+                };
+            };
+
+            // ----- OPEN/CLOSE PURCHASE MODAL -----
+            window.openPurchaseModal = async function() {
+                purchaseModal.classList.add('active');
+                // Load packages if not already loaded or if they're empty
+                if (connectPackagesData.length === 0) {
+                    await loadConnectsPackages();
+                }
+                phoneNumber.focus();
+            };
+
+            window.closePurchaseModal = function() {
+                purchaseModal.classList.remove('active');
+            };
+
+            purchaseModal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closePurchaseModal();
+                }
+            });
+
+            // ----- OPEN/CLOSE RECEIPT MODAL -----
+            window.openReceiptModal = function(index) {
+                const payment = payments[index];
+                if (!payment) return;
+
+                receiptDetails.innerHTML = `
+                    <div style="text-align: center; padding: 8px 0;">
+                        <div style="font-size: 48px; color: var(--primary-light); margin-bottom: 12px;">
+                            <i class="fas fa-receipt"></i>
+                        </div>
+                        <div style="font-size: 28px; font-weight: 700; color: var(--text-dark); margin-bottom: 4px;">
+                            ${formatCurrency(payment.amount)}
+                        </div>
+                        <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 16px;">
+                            ${payment.recepient || 'Payment'}
+                        </div>
+                        <div style="border-top: 1px solid var(--border); padding-top: 16px; text-align: left;">
+                            <div style="display: flex; justify-content: space-between; padding: 6px 0;">
+                                <span style="color: var(--text-muted);">Transaction ID</span>
+                                <span style="color: var(--text-dark); font-weight: 500;">#${payment.id || 'N/A'}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 6px 0;">
+                                <span style="color: var(--text-muted);">Date</span>
+                                <span style="color: var(--text-dark); font-weight: 500;">${formatDate(payment.date_time)}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 6px 0;">
+                                <span style="color: var(--text-muted);">Status</span>
+                                ${getStatusBadge(payment.status || 'completed')}
+                            </div>
+                            ${payment.connects ? `
+                            <div style="display: flex; justify-content: space-between; padding: 6px 0;">
+                                <span style="color: var(--text-muted);">Connects</span>
+                                <span style="color: var(--text-dark); font-weight: 500;">${payment.connects}</span>
+                            </div>
+                            ` : ''}
+                        </div>
+                        <button onclick="closeReceiptModal()" style="margin-top: 20px; padding: 10px 24px; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; cursor: pointer; color: var(--text-dark); font-weight: 500; width: 100%;">
+                            Close
+                        </button>
+                    </div>
+                `;
+                receiptModal.classList.add('active');
+            };
+
+            window.closeReceiptModal = function() {
+                receiptModal.classList.remove('active');
+            };
+
+            receiptModal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeReceiptModal();
+                }
+            });
+
+            // ----- RENDER RECEIPTS -----
+            function renderReceipts(paymentsData) {
+                if (!paymentsData || paymentsData.length === 0) {
+                    receiptsList.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-receipt"></i>
+                            <h4>No payment history</h4>
+                            <p>Your payment receipts will appear here once you make a purchase.</p>
+                        </div>
+                    `;
+                    receiptCount.textContent = '0 receipts';
+                    return;
+                }
+
+                let html = '';
+                paymentsData.forEach((payment, index) => {
+                    const amount = parseFloat(payment.amount) || 0;
+                    const date = formatDate(payment.date_time);
+                    const recipient = payment.recepient || 'Payment';
+                    const status = payment.status || 'completed';
+                    
+                    html += `
+                        <div class="receipt-item" onclick="openReceiptModal(${index})">
+                            <div class="receipt-info">
+                                <div class="receipt-id">${recipient}</div>
+                                <div class="receipt-meta">
+                                    <span class="meta-item"><i class="far fa-calendar-alt"></i> ${date}</span>
+                                    <span class="meta-item"><i class="fas fa-tag"></i> #${payment.id || 'N/A'}</span>
+                                    ${getStatusBadge(status)}
+                                </div>
+                            </div>
+                            <div class="receipt-amount">
+                                ${formatCurrency(amount)}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                receiptsList.innerHTML = html;
+                receiptCount.textContent = `${paymentsData.length} receipt${paymentsData.length > 1 ? 's' : ''}`;
+            }
+
+            // ----- LOAD PAYMENTS -----
+            async function loadPayments() {
+                if (isLoading) return;
+                
+                try {
+                    isLoading = true;
+                    receiptsList.innerHTML = `
+                        <div class="loading-spinner">
+                            <i class="fas fa-spinner"></i>
+                            <span>Loading receipts...</span>
+                        </div>
+                    `;
+
+                    const response = await fetch(API.paymentsInfo, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                        return;
+                    }
+
+                    if (data.success && data.payments) {
+                        payments = data.payments;
+                        renderReceipts(payments);
+                    } else {
+                        payments = [];
+                        renderReceipts([]);
+                        if (data.message) {
+                            showMessage(data.message, 'info');
+                        }
+                    }
+                } catch (error) {
+                    showMessage('Failed to load payment history. Please try again.', 'error');
+                    receiptsList.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i>
+                            <h4>Error loading receipts</h4>
+                            <p>Please refresh the page or try again later.</p>
+                        </div>
+                    `;
+                } finally {
+                    isLoading = false;
+                }
+            }
+
+            // ----- PURCHASE CONNECTS -----
+            purchaseForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const phone = phoneNumber.value.trim();
+                const connects = selectedConnects.value;
+                const amount = selectedAmount.value;
+                const connectId = selectedConnectId.value;
+
+                if (!phone) {
+                    showMessage('Please enter your phone number.', 'error');
+                    phoneNumber.focus();
+                    return;
+                }
+
+                // Validate phone number (Kenyan format)
+                const phoneRegex = /^(07|01)[0-9]{8}$/;
+                if (!phoneRegex.test(phone)) {
+                    showMessage('Please enter a valid phone number (e.g., 0712345678).', 'error');
+                    phoneNumber.focus();
+                    return;
+                }
+
+                if (!connectId) {
+                    showMessage('Please select a connects package.', 'error');
+                    return;
+                }
+
+                purchaseBtn.disabled = true;
+                purchaseBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+                try {
+                    const formData = new FormData();
+                    formData.append('phone_number', phone);
+                    formData.append('connects', connects);
+                    formData.append('amount', amount);
+                    formData.append('connect_id', connectId);
+
+                    const response = await fetch(API.purchaseConnects, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const data = await response.json();
+
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                        return;
+                    }
+
+                    if (data.success) {
+                        showMessage(data.msg || 'Payment initiated successfully!', 'success');
+                        closePurchaseModal();
+                        phoneNumber.value = '';
+                        // Refresh payments
+                        await loadPayments();
+                    } else {
+                        showMessage(data.msg || 'Failed to initiate payment.', 'error');
+                    }
+                } catch (error) {
+                    showMessage('An error occurred. Please try again.', 'error');
+                } finally {
+                    purchaseBtn.disabled = false;
+                    purchaseBtn.innerHTML = '<i class="fas fa-lock"></i> Pay Now';
+                }
+            });
+
+            // ----- KEYBOARD SHORTCUTS -----
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closePurchaseModal();
+                    closeReceiptModal();
+                }
+            });
+
+            // ----- INIT -----
+            // Load packages when modal opens (lazy loading)
+            // Load payments on page load
+            loadPayments();
+
+        })();
+    </script>
+
+</body>
+</html>

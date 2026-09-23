@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <title>CraftLink · multi‑skill</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* ----- ROOT (craft theme) ----- */
+        :root {
+            --primary: #2a6f6f;
+            --primary-light: #3d8f8f;
+            --gradient: linear-gradient(145deg, #1d4f4f, #3d9e9e);
+            --bg: #f4f6f9;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --border: rgba(45, 75, 75, 0.12);
+            --text-dark: #1e2b2b;
+            --text-light: #3f5555;
+            --text-muted: #6b8a8a;
+            --danger: #c94a4a;
+            --success: #2a7a5a;
+            --radius: 24px;
+            --shadow: 0 12px 40px rgba(0, 20, 20, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            display: flex;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background-image: radial-gradient(circle at 10% 30%, rgba(45, 130, 130, 0.04) 0%, transparent 30%),
+                              radial-gradient(circle at 90% 70%, rgba(30, 100, 100, 0.04) 0%, transparent 40%);
+        }
+
+        .main {
+            width: 100%;
+            max-width: 620px;
+            margin: 0 auto;
+        }
+
+        .center-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        /* ----- BRAND ----- */
+        .brand-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        .brand-header i {
+            font-size: 34px;
+            color: var(--primary);
+            background: rgba(42, 111, 111, 0.10);
+            padding: 10px;
+            border-radius: 18px;
+        }
+        .brand-header h1 {
+            font-size: 34px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .subhead {
+            font-size: 15px;
+            color: var(--text-light);
+            margin-bottom: 20px;
+            background: rgba(42, 111, 111, 0.06);
+            padding: 8px 22px;
+            border-radius: 40px;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(42, 111, 111, 0.08);
+            font-weight: 450;
+        }
+        .subhead i { margin-right: 8px; color: var(--primary); }
+
+        /* ----- FORM CARD (glass) ----- */
+        .form-card {
+            width: 100%;
+            padding: 36px 32px 32px;
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        .shine {
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+            animation: shineMove 6s infinite ease-in-out;
+            pointer-events: none;
+        }
+        @keyframes shineMove {
+            0% { left: -150%; }
+            50% { left: 120%; }
+            100% { left: -150%; }
+        }
+
+        .form-group { margin-bottom: 18px; }
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 5px;
+        }
+        label i { color: var(--primary); font-size: 14px; width: 18px; }
+
+        .input-wrap { position: relative; }
+        input, select {
+            width: 100%;
+            padding: 13px 16px;
+            border-radius: 14px;
+            border: 1px solid #dce2e8;
+            background: #ffffff;
+            font-size: 14px;
+            outline: none;
+            transition: 0.2s;
+            color: var(--text-dark);
+        }
+        input:focus, select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(42, 111, 111, 0.12);
+        }
+
+        /* ----- MULTI‑SELECT CUSTOM (tag‑like) ----- */
+        .multi-select-wrapper {
+            position: relative;
+            border: 1px solid #dce2e8;
+            border-radius: 14px;
+            background: #fff;
+            padding: 8px 12px;
+            transition: 0.2s;
+            cursor: text;
+        }
+        .multi-select-wrapper:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(42, 111, 111, 0.12);
+        }
+
+        .multi-select-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 6px;
+            align-items: center;
+            min-height: 44px;
+        }
+
+        .tag-item {
+            background: rgba(42, 111, 111, 0.12);
+            color: var(--text-dark);
+            padding: 6px 12px 6px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(42, 111, 111, 0.15);
+            transition: 0.1s;
+            animation: tagPop 0.2s ease;
+        }
+        @keyframes tagPop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .tag-item .remove-tag {
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1;
+            padding: 0 2px;
+        }
+        .tag-item .remove-tag:hover {
+            color: var(--danger);
+        }
+
+        .multi-select-input {
+            border: none;
+            outline: none;
+            flex: 1;
+            min-width: 120px;
+            padding: 6px 4px;
+            font-size: 14px;
+            background: transparent;
+            color: var(--text-dark);
+        }
+        .multi-select-input::placeholder {
+            color: #9aaeb0;
+        }
+
+        .multi-select-dropdown {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #dce2e8;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+            max-height: 220px;
+            overflow-y: auto;
+            z-index: 50;
+            display: none;
+            padding: 8px 0;
+        }
+        .multi-select-dropdown.show { display: block; }
+
+        .dropdown-option {
+            padding: 10px 18px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.1s;
+        }
+        .dropdown-option:hover {
+            background: rgba(42, 111, 111, 0.06);
+        }
+        .dropdown-option .check {
+            margin-left: auto;
+            color: var(--primary);
+            font-size: 14px;
+        }
+        .dropdown-option .check.hidden { visibility: hidden; }
+
+        .multi-select-specify {
+            border-top: 1px solid #eceff3;
+            padding: 12px 18px;
+            display: flex;
+            gap: 8px;
+            background: #fafbfc;
+        }
+        .multi-select-specify input {
+            flex: 1;
+            border: 1px solid #dce2e8;
+            border-radius: 30px;
+            padding: 8px 14px;
+            font-size: 13px;
+            outline: none;
+        }
+        .multi-select-specify input:focus {
+            border-color: var(--primary);
+        }
+        .multi-select-specify button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 8px 18px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+        .multi-select-specify button:hover {
+            background: var(--primary-light);
+        }
+
+        /* ----- other form elements ----- */
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 40px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(42, 111, 111, 0.25);
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .auth-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+        .auth-link {
+            background: none;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 8px 20px;
+            border-radius: 40px;
+            transition: 0.2s;
+            color: var(--primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+        .auth-link.signup {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 2px 10px rgba(42, 111, 111, 0.2);
+        }
+        .auth-link.login {
+            background: rgba(42, 111, 111, 0.08);
+        }
+        .auth-link.forgot-password {
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 13px;
+            padding: 4px 12px;
+        }
+        .auth-link.forgot-password:hover {
+            color: var(--primary);
+        }
+        .auth-link:hover { transform: translateY(-2px); }
+
+        .message-area {
+            margin-bottom: 16px;
+            font-size: 13px;
+            text-align: center;
+            padding: 6px 12px;
+            border-radius: 30px;
+            background: rgba(42, 111, 111, 0.04);
+            color: var(--text-light);
+        }
+        .message-area.error {
+            background: rgba(201, 74, 74, 0.08);
+            color: var(--danger);
+        }
+        .message-area.success {
+            background: rgba(42, 122, 90, 0.08);
+            color: var(--success);
+        }
+
+        /* modal (login) */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(6px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        .modal-overlay.active { display: flex; animation: fadeModal 0.25s ease; }
+        @keyframes fadeModal { 0% { opacity: 0; } 100% { opacity: 1; } }
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 440px;
+            border-radius: 28px;
+            overflow: hidden;
+            animation: slideUp 0.25s ease;
+            box-shadow: 0 25px 60px rgba(0, 20, 20, 0.2);
+        }
+        @keyframes slideUp { 0% { transform: translateY(20px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 28px 0;
+        }
+        .modal-header h2 {
+            font-size: 22px;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 30px;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: 0.2s;
+            line-height: 1;
+        }
+        .close-modal:hover { color: var(--danger); }
+        .modal-body { padding: 20px 28px 32px; }
+
+        /* Forgot password link in modal */
+        .forgot-password-link {
+            display: block;
+            text-align: right;
+            margin-top: 8px;
+            font-size: 13px;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        .forgot-password-link:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+
+        @media (max-width: 500px) {
+            .form-card { padding: 28px 18px; }
+            .brand-header h1 { font-size: 28px; }
+            .subhead { font-size: 13px; padding: 6px 16px; }
+            .auth-links { gap: 12px; }
+            .auth-link { font-size: 13px; padding: 6px 14px; }
+        }
+    </style>
+</head>
+<body>
+<div class="main">
+    <div class="center-wrap">
+        <!-- Brand -->
+        <div class="brand-header">
+            <i class="fas fa-handshake"></i>
+            <h1>CraftLink</h1>
+        </div>
+        <div class="subhead">
+            <i class="fas fa-bolt"></i> multi‑skill · clients &amp; pros
+        </div>
+
+        <!-- ===== SIGNUP CARD ===== -->
+        <div class="form-card">
+            <div class="shine"></div>
+            <div id="signupMessage" class="message-area">
+                <i class="fas fa-info-circle"></i> join as client or technician
+            </div>
+
+            <form id="signupForm"
+                  action="{{ url_for('register_client_bp.register_client') }}"
+                  method="post"
+                  novalidate>
+
+                <!-- account type -->
+                <div class="form-group">
+                    <label><i class="fas fa-user-tag"></i> I am a</label>
+                    <select name="account_type" id="accountType" required>
+                        <option value="client">Client – hiring</option>
+                        <option value="technician">Technician – providing services</option>
+                    </select>
+                </div>
+
+                <!-- email -->
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" name="email" placeholder="you@example.com" required />
+                </div>
+
+                <!-- password -->
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Password</label>
+                    <div class="input-wrap">
+                        <input type="password" id="signupPassword" name="password" placeholder="min 8 characters" required />
+                        <span class="toggle-password" data-target="signupPassword" style="position:absolute; right:16px; top:50%; transform:translateY(-50%); cursor:pointer; color:var(--text-light);">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- ===== MULTI‑SELECT SKILLS (technician only) ===== -->
+                <div id="skillsContainer" class="form-group" style="display: none;">
+                    <label><i class="fas fa-tools"></i> Your trade(s) <span style="font-weight:400; color:var(--text-light);">(select multiple)</span></label>
+
+                    <div class="multi-select-wrapper" id="multiSelectWrapper">
+                        <div class="multi-select-tags" id="tagsContainer">
+                            <!-- tags will appear here -->
+                            <input type="text" class="multi-select-input" id="skillSearchInput" placeholder="Type or select a trade…" autocomplete="off" />
+                        </div>
+
+                        <!-- dropdown -->
+                        <div class="multi-select-dropdown" id="skillDropdown">
+                            <!-- options injected by js -->
+                            <div id="dropdownOptions"></div>
+                            <!-- custom specify -->
+                            <div class="multi-select-specify">
+                                <input type="text" id="customSkillInput" placeholder="Other specialty (e.g. tile, stone)" />
+                                <button type="button" id="addCustomSkillBtn">+ Add</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- hidden field to store selected skills (comma separated) -->
+                    <input type="hidden" name="skill_set" id="skillSetHidden" value="" />
+
+                    <small style="display:block; margin-top:8px; color: var(--text-light); font-size:12px;">
+                        <i class="fas fa-plus-circle"></i> add multiple trades; you can also type your own.
+                    </small>
+                </div>
+
+                <!-- timezone hidden -->
+                <input type="hidden" name="time_zone" id="timeZoneInput" value="UTC" />
+
+                <button type="submit" class="btn">
+                    <i class="fas fa-user-plus"></i> Create account
+                </button>
+            </form>
+
+            <div class="auth-links">
+                <a href="#" class="auth-link signup"><i class="fas fa-pen"></i> Sign Up</a>
+                <button class="auth-link login" id="openLoginModal"><i class="fas fa-sign-in-alt"></i> Login</button>
+                <a href="{{ url_for('reset_password_bp.reset_password_page') }}" class="auth-link forgot-password">
+                    <i class="fas fa-key"></i> Forgot Password?
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== LOGIN MODAL ===== -->
+<div id="loginModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2><i class="fas fa-arrow-right-to-bracket" style="margin-right:8px;"></i> Welcome back</h2>
+            <button class="close-modal" id="closeModalBtn">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div id="loginMessage" class="message-area"><i class="fas fa-lock-open"></i> enter your credentials</div>
+            <form id="loginForm" action="{{ url_for('login_logout_bp.handle_login') }}" method="post">
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" name="email" placeholder="your@email.com" required />
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Password</label>
+                    <div class="input-wrap">
+                        <input type="password" id="loginPassword" name="password" placeholder="••••••••" required />
+                        <span class="toggle-password" data-target="loginPassword" style="position:absolute; right:16px; top:50%; transform:translateY(-50%); cursor:pointer; color:var(--text-light);">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                    </div>
+                </div>
+                <!-- Forgot Password link inside modal -->
+                <a href="{{ url_for('reset_password_bp.reset_password_page') }}" class="forgot-password-link">
+                    <i class="fas fa-key"></i> Forgot your password?
+                </a>
+                <button type="submit" class="btn"><i class="fas fa-sign-in-alt"></i> Login</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+    "use strict";
+
+    // ----- DOM refs -----
+    const signupForm = document.getElementById('signupForm');
+    const loginForm = document.getElementById('loginForm');
+    const signupMsg = document.getElementById('signupMessage');
+    const loginMsg = document.getElementById('loginMessage');
+    const modal = document.getElementById('loginModal');
+    const openModalBtn = document.getElementById('openLoginModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+
+    const accountTypeSelect = document.getElementById('accountType');
+    const skillsContainer = document.getElementById('skillsContainer');
+    const skillSetHidden = document.getElementById('skillSetHidden');
+    const tagsContainer = document.getElementById('tagsContainer');
+    const skillSearchInput = document.getElementById('skillSearchInput');
+    const dropdown = document.getElementById('skillDropdown');
+    const dropdownOptions = document.getElementById('dropdownOptions');
+    const customSkillInput = document.getElementById('customSkillInput');
+    const addCustomBtn = document.getElementById('addCustomSkillBtn');
+    const timeZoneInput = document.getElementById('timeZoneInput');
+    const multiSelectWrapper = document.getElementById('multiSelectWrapper');
+
+    // ----- preset skill options -----
+    const presetSkills = [
+        'Electrical engineering',
+        'Plumbing',
+        'Masonry',
+        'Carpentry',
+        'HVAC',
+        'General contracting',
+        'Painting',
+        'Welding',
+        'Landscaping',
+        'Roofing'
+    ];
+
+    // ----- state: selected skills (array of strings) -----
+    let selectedSkills = [];
+    let isDropdownOpen = false;
+
+    // ----- helpers -----
+    function renderTags() {
+        // clear tags (keep input)
+        const inputEl = tagsContainer.querySelector('.multi-select-input');
+        tagsContainer.innerHTML = '';
+        
+        if (selectedSkills.length === 0) {
+            // Show placeholder in input
+            inputEl.placeholder = 'Type or select a trade…';
+        } else {
+            inputEl.placeholder = 'Add more…';
+        }
+        
+        selectedSkills.forEach(skill => {
+            const tag = document.createElement('span');
+            tag.className = 'tag-item';
+            tag.innerHTML = `${skill} <span class="remove-tag" data-skill="${skill}">&times;</span>`;
+            tagsContainer.appendChild(tag);
+        });
+        
+        // re-append input
+        tagsContainer.appendChild(inputEl);
+        inputEl.value = '';
+
+        // attach remove events
+        document.querySelectorAll('.tag-item .remove-tag').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const skill = this.dataset.skill;
+                selectedSkills = selectedSkills.filter(s => s !== skill);
+                updateHidden();
+                renderTags();
+                renderDropdown('');
+                // Keep dropdown open after removing
+                if (isDropdownOpen) {
+                    dropdown.classList.add('show');
+                }
+            });
+        });
+
+        updateHidden();
+    }
+
+    function updateHidden() {
+        const skillString = selectedSkills.join(',');
+        skillSetHidden.value = skillString;
+    }
+
+    function renderDropdown(filter = '') {
+        const lowerFilter = filter.toLowerCase().trim();
+        let optionsHtml = '';
+
+        // show preset skills that match filter and are not selected
+        const available = presetSkills.filter(s =>
+            s.toLowerCase().includes(lowerFilter) &&
+            !selectedSkills.includes(s)
+        );
+
+        if (available.length === 0 && filter.trim().length > 0) {
+            // suggest to add custom
+            optionsHtml = `<div class="dropdown-option" style="color:var(--text-light); cursor:default; justify-content:center;">
+                            <span style="color: var(--text-muted);">No match — type your own below</span>
+                          </div>`;
+        } else if (available.length === 0 && filter.trim().length === 0) {
+            // Show all skills when no filter
+            presetSkills.forEach(skill => {
+                if (!selectedSkills.includes(skill)) {
+                    optionsHtml += `
+                        <div class="dropdown-option" data-skill="${skill}">
+                            <span>${skill}</span>
+                            <span class="check hidden">✓</span>
+                        </div>
+                    `;
+                }
+            });
+            if (optionsHtml === '') {
+                optionsHtml = `<div class="dropdown-option" style="color:var(--text-light); cursor:default; justify-content:center;">
+                                <span style="color: var(--text-muted);">All skills added!</span>
+                              </div>`;
+            }
+        } else {
+            available.forEach(skill => {
+                optionsHtml += `
+                    <div class="dropdown-option" data-skill="${skill}">
+                        <span>${skill}</span>
+                        <span class="check hidden">✓</span>
+                    </div>
+                `;
+            });
+        }
+
+        dropdownOptions.innerHTML = optionsHtml;
+
+        // click to add
+        dropdownOptions.querySelectorAll('.dropdown-option[data-skill]').forEach(el => {
+            el.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const skill = this.dataset.skill;
+                if (!selectedSkills.includes(skill)) {
+                    selectedSkills.push(skill);
+                    renderTags();
+                    renderDropdown('');
+                    skillSearchInput.value = '';
+                    skillSearchInput.focus();
+                    // Keep dropdown open
+                    dropdown.classList.add('show');
+                    isDropdownOpen = true;
+                    updateHidden();
+                    showSignupMessage(`"${skill}" added!`, 'success');
+                }
+            });
+        });
+    }
+
+    // ----- add custom skill -----
+    function addCustomSkill() {
+        const val = customSkillInput.value.trim();
+        
+        if (!val) {
+            showSignupMessage('Please enter a specialty.', 'error');
+            return;
+        }
+
+        // Check if skill already exists in selected skills (case insensitive)
+        const skillExists = selectedSkills.some(s => s.toLowerCase() === val.toLowerCase());
+        
+        if (skillExists) {
+            showSignupMessage(`"${val}" is already in your list.`, 'error');
+            customSkillInput.value = '';
+            return;
+        }
+
+        // Add the custom skill
+        selectedSkills.push(val);
+        
+        // Clear the custom input
+        customSkillInput.value = '';
+        
+        // Update UI
+        renderTags();
+        renderDropdown('');
+        updateHidden();
+        
+        // Keep dropdown open
+        dropdown.classList.add('show');
+        isDropdownOpen = true;
+        
+        // Show success message
+        showSignupMessage(`"${val}" added successfully!`, 'success');
+        
+        // Focus back on search input
+        skillSearchInput.focus();
+    }
+
+    // ----- toggle visibility of skills (technician only) -----
+    function toggleSkills() {
+        if (accountTypeSelect.value === 'technician') {
+            skillsContainer.style.display = 'block';
+            // If no skills selected, open dropdown to encourage selection
+            if (selectedSkills.length === 0) {
+                setTimeout(() => {
+                    openDropdown();
+                }, 300);
+            }
+        } else {
+            skillsContainer.style.display = 'none';
+            // Don't clear skills when switching to client - they might switch back
+            // But we should close the dropdown
+            closeDropdown();
+        }
+    }
+
+    // ----- OPEN DROPDOWN -----
+    function openDropdown() {
+        dropdown.classList.add('show');
+        isDropdownOpen = true;
+        renderDropdown(skillSearchInput.value);
+    }
+
+    // ----- CLOSE DROPDOWN -----
+    function closeDropdown() {
+        dropdown.classList.remove('show');
+        isDropdownOpen = false;
+    }
+
+    // ----- TOGGLE DROPDOWN -----
+    function toggleDropdown() {
+        if (isDropdownOpen) {
+            closeDropdown();
+        } else {
+            openDropdown();
+        }
+    }
+
+    // ----- init multi-select -----
+    function initMultiSelect() {
+        renderTags();
+        renderDropdown('');
+        updateHidden();
+
+        // Click on the wrapper to focus input and open dropdown
+        multiSelectWrapper.addEventListener('click', function(e) {
+            // Don't interfere with clicks on remove buttons or dropdown items
+            if (e.target.closest('.remove-tag') || e.target.closest('.dropdown-option')) {
+                return;
+            }
+            skillSearchInput.focus();
+            if (!isDropdownOpen) {
+                openDropdown();
+            }
+        });
+
+        // Search input events
+        skillSearchInput.addEventListener('focus', function(e) {
+            e.stopPropagation();
+            openDropdown();
+        });
+
+        skillSearchInput.addEventListener('input', function(e) {
+            e.stopPropagation();
+            const val = this.value;
+            renderDropdown(val);
+            if (!isDropdownOpen) {
+                openDropdown();
+            }
+        });
+
+        skillSearchInput.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (!isDropdownOpen) {
+                openDropdown();
+            }
+        });
+
+        // Prevent dropdown from closing when clicking inside it
+        dropdown.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+
+        // Close dropdown on outside click
+        document.addEventListener('click', function(e) {
+            const wrapper = document.getElementById('multiSelectWrapper');
+            if (wrapper && !wrapper.contains(e.target)) {
+                closeDropdown();
+            }
+        });
+
+        // Add custom skill - Button click
+        addCustomBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            addCustomSkill();
+        });
+
+        // Add custom skill - Enter key in custom input
+        customSkillInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                e.stopPropagation();
+                addCustomSkill();
+            }
+        });
+
+        customSkillInput.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+
+        // Allow pressing Enter in search to add custom if no match
+        skillSearchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const val = this.value.trim();
+                if (val) {
+                    // Check if skill exists in selected
+                    const exists = selectedSkills.some(s => s.toLowerCase() === val.toLowerCase());
+                    if (!exists) {
+                        e.preventDefault();
+                        // Add the skill directly from search input
+                        selectedSkills.push(val);
+                        renderTags();
+                        renderDropdown('');
+                        this.value = '';
+                        updateHidden();
+                        openDropdown();
+                        showSignupMessage(`"${val}" added successfully!`, 'success');
+                    } else {
+                        showSignupMessage(`"${val}" is already in your list.`, 'error');
+                        this.value = '';
+                    }
+                }
+            }
+        });
+
+        // Close dropdown with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && isDropdownOpen) {
+                closeDropdown();
+                skillSearchInput.blur();
+            }
+        });
+    }
+
+    // ----- password toggle -----
+    document.querySelectorAll('.toggle-password').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            const input = this.closest('.input-wrap').querySelector('input');
+            if (!input) return;
+            const icon = this.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        });
+    });
+
+    // ----- timezone -----
+    try {
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        if (tz) timeZoneInput.value = tz;
+    } catch (_) {}
+
+    // ----- account type change -----
+    accountTypeSelect.addEventListener('change', function() {
+        toggleSkills();
+        // If switching to technician, open dropdown
+        if (this.value === 'technician') {
+            setTimeout(() => {
+                openDropdown();
+            }, 200);
+        } else {
+            closeDropdown();
+        }
+    });
+
+    // ----- SIGNUP MESSAGE -----
+    function showSignupMessage(text, type) {
+        signupMsg.innerHTML = text;
+        signupMsg.className = 'message-area';
+        if (type) signupMsg.classList.add(type);
+        // Auto-hide after 3 seconds for success messages
+        if (type === 'success') {
+            setTimeout(() => {
+                signupMsg.className = 'message-area';
+                signupMsg.innerHTML = '<i class="fas fa-info-circle"></i> join as client or technician';
+            }, 3000);
+        }
+    }
+
+    // ----- LOGIN MESSAGE -----
+    function showLoginMessage(text, type) {
+        loginMsg.innerHTML = text;
+        loginMsg.className = 'message-area';
+        if (type) loginMsg.classList.add(type);
+    }
+
+    // ----- HANDLE REDIRECTS -----
+    function handleRedirect(redirectUrl) {
+        if (redirectUrl) {
+            window.location.href = redirectUrl;
+        }
+    }
+
+    // ----- SIGNUP FORM SUBMISSION -----
+    signupForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        if (accountTypeSelect.value === 'technician' && selectedSkills.length === 0) {
+            showSignupMessage('⚠️ Please add at least one trade/skill.', 'error');
+            return;
+        }
+
+        const submitBtn = signupForm.querySelector('.btn');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating account...';
+        submitBtn.disabled = true;
+
+        const formData = new FormData(signupForm);
+
+        try {
+            const response = await fetch(signupForm.action, {
+                method: 'POST',
+                body: formData
+            });
+            
+            const data = await response.json();
+            
+            if (data.redirect) {
+                showSignupMessage('✅ Account created! Redirecting...', 'success');
+                setTimeout(() => {
+                    handleRedirect(data.redirect);
+                }, 1000);
+                return;
+            }
+            
+            if (data.success === true) {
+                showSignupMessage('✅ ' + (data.message || 'Account created successfully!'), 'success');
+                signupForm.reset();
+                selectedSkills = [];
+                renderTags();
+                renderDropdown('');
+                toggleSkills();
+                closeDropdown();
+                updateHidden();
+                
+                if (data.redirect) {
+                    setTimeout(() => {
+                        handleRedirect(data.redirect);
+                    }, 1500);
+                }
+            } else {
+                showSignupMessage('❌ ' + (data.message || 'Something went wrong.'), 'error');
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        } catch (err) {
+            showSignupMessage('⚠️ Network error. Please try again.', 'error');
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+    });
+
+    // ----- LOGIN FORM SUBMISSION -----
+    loginForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(loginForm);
+        
+        const submitBtn = loginForm.querySelector('.btn');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+        submitBtn.disabled = true;
+        
+        try {
+            const response = await fetch(loginForm.action, {
+                method: 'POST',
+                body: formData
+            });
+            
+            const data = await response.json();
+            
+            if (data.redirect) {
+                showLoginMessage('✅ Login successful! Redirecting...', 'success');
+                setTimeout(() => {
+                    handleRedirect(data.redirect);
+                }, 500);
+                return;
+            }
+            
+            if (data.success === true) {
+                showLoginMessage('✅ ' + (data.message || 'Login successful!'), 'success');
+                
+                if (data.redirect) {
+                    setTimeout(() => {
+                        handleRedirect(data.redirect);
+                    }, 500);
+                } else {
+                    setTimeout(() => {
+                        modal.classList.remove('active');
+                        window.location.reload();
+                    }, 500);
+                }
+            } else {
+                showLoginMessage('❌ ' + (data.message || 'Invalid credentials.'), 'error');
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        } catch (err) {
+            showLoginMessage('⚠️ Network error. Please try again.', 'error');
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+    });
+
+    // ----- MODAL CONTROLS -----
+    openModalBtn.addEventListener('click', () => {
+        modal.classList.add('active');
+        showLoginMessage('<i class="fas fa-lock-open"></i> enter your credentials', '');
+    });
+    
+    closeModalBtn.addEventListener('click', () => modal.classList.remove('active'));
+    
+    window.addEventListener('click', (e) => { 
+        if (e.target === modal) modal.classList.remove('active'); 
+    });
+    
+    document.addEventListener('keydown', (e) => { 
+        if (e.key === 'Escape') modal.classList.remove('active'); 
+    });
+
+    // ----- START -----
+    toggleSkills();
+    initMultiSelect();
+
+    // ensure hidden field is updated on load
+    updateHidden();
+
+})();
+</script>
+
+</body>
+</html>

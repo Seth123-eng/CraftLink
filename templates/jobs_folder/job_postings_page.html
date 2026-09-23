@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <title>CraftLink · Job Postings</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* ----- ROOT VARIABLES (matching dashboard) ----- */
+        :root {
+            --primary: #2a6f6f;
+            --primary-light: #3d8f8f;
+            --primary-dark: #1d4f4f;
+            --gradient: linear-gradient(145deg, #1d4f4f, #3d9e9e);
+            --bg: #eef2f7;
+            --card-bg: rgba(255, 255, 255, 0.65);
+            --glass-bg: rgba(255, 255, 255, 0.5);
+            --border: rgba(45, 75, 75, 0.12);
+            --text-dark: #1e2b2b;
+            --text-light: #3f5555;
+            --text-muted: #6b8a8a;
+            --danger: #c94a4a;
+            --success: #2a7a5a;
+            --warning: #f39c12;
+            --radius: 20px;
+            --shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+            --glow: 0 0 30px rgba(42, 111, 111, 0.08);
+        }
+
+        /* ----- RESET & BASE ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            color: var(--text-dark);
+            padding: 20px;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(42, 111, 111, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(42, 111, 111, 0.03) 0%, transparent 50%);
+        }
+
+        /* ----- MAIN CONTENT ----- */
+        .main-content {
+            width: 100%;
+            max-width: 1200px;
+            padding: 30px 40px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.25s;
+            margin-bottom: 20px;
+        }
+
+        .back-link:hover {
+            color: var(--primary);
+            transform: translateX(-4px);
+        }
+
+        {% if current_user_.account_type == "client" %}
+        /* ----- POST JOB SECTION ----- */
+        .post-job-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+        }
+
+        .post-job-section .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .post-job-section h3 {
+            color: var(--text-dark);
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .post-job-section h3 i {
+            color: var(--primary-light);
+        }
+
+        .post-job-section .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .post-job-section .btn-my-jobs {
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .post-job-section .btn-my-jobs:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(42, 111, 111, 0.2);
+        }
+
+        .post-job-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .post-job-form .form-row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .post-job-form .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .post-job-form .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 6px;
+        }
+
+        .post-job-form .form-group input,
+        .post-job-form .form-group textarea,
+        .post-job-form .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: #ffffff;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
+            color: var(--text-dark);
+            font-family: inherit;
+        }
+
+        .post-job-form .form-group input:focus,
+        .post-job-form .form-group textarea:focus,
+        .post-job-form .form-group select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(42, 111, 111, 0.1);
+        }
+
+        .post-job-form .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .post-job-form .btn-submit {
+            padding: 12px 32px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            align-self: flex-start;
+        }
+
+        .post-job-form .btn-submit:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(42, 111, 111, 0.2);
+        }
+
+        .post-job-form .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        {% endif %}
+
+        /* ----- SEARCH & FILTER SECTION ----- */
+        .search-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-section .search-input-wrapper {
+            flex: 1;
+            position: relative;
+            min-width: 200px;
+        }
+
+        .search-section .search-input-wrapper input {
+            width: 100%;
+            padding: 12px 16px 12px 44px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: #ffffff;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
+            color: var(--text-dark);
+        }
+
+        .search-section .search-input-wrapper input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(42, 111, 111, 0.1);
+        }
+
+        .search-section .search-input-wrapper i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .search-section .category-filter {
+            min-width: 180px;
+            position: relative;
+        }
+
+        .search-section .category-filter select {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: #ffffff;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
+            color: var(--text-dark);
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b8a8a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+        }
+
+        .search-section .category-filter select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(42, 111, 111, 0.1);
+        }
+
+        /* ----- JOBS GRID ----- */
+        .jobs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 24px;
+            margin-top: 8px;
+        }
+
+        .job-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .job-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+            border-color: rgba(42, 111, 111, 0.2);
+        }
+
+        .job-card .card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+
+        .job-card .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .job-card .card-header .info h4 {
+            font-size: 16px;
+            color: var(--text-dark);
+            margin-bottom: 2px;
+        }
+
+        .job-card .card-header .info .sub-info {
+            font-size: 13px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .job-card .job-category {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            background: rgba(42, 111, 111, 0.1);
+            color: var(--primary);
+            margin-bottom: 10px;
+            align-self: flex-start;
+        }
+
+        .job-card .job-description {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 16px;
+            flex: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .job-card .job-meta {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .job-card .job-meta .meta-item {
+            font-size: 12px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .job-card .job-meta .meta-item i {
+            color: var(--primary-light);
+            font-size: 14px;
+        }
+
+        .job-card .card-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .job-card .card-actions .btn-action {
+            padding: 8px 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-dark);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+            justify-content: center;
+            min-width: 70px;
+            text-decoration: none;
+        }
+
+        .job-card .card-actions .btn-action:hover {
+            background: rgba(42, 111, 111, 0.06);
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .job-card .card-actions .btn-action.chat {
+            background: var(--primary);
+            color: white;
+            border: none;
+        }
+
+        .job-card .card-actions .btn-action.chat:hover {
+            background: var(--primary-light);
+            box-shadow: 0 8px 24px rgba(42, 111, 111, 0.2);
+        }
+
+        .job-card .card-actions .btn-action.chat.disabled {
+            background: #dce2e8;
+            color: var(--text-muted);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .job-card .card-actions .btn-action.chat.disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .job-card .card-actions .btn-action.danger {
+            color: var(--danger);
+            border-color: rgba(201, 74, 74, 0.2);
+        }
+
+        .job-card .card-actions .btn-action.danger:hover {
+            background: rgba(201, 74, 74, 0.06);
+            border-color: var(--danger);
+        }
+
+        /* Job Poster Badge */
+        .job-card .job-poster-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 30px;
+            font-size: 10px;
+            font-weight: 600;
+            background: rgba(42, 111, 111, 0.1);
+            color: var(--primary);
+            margin-left: 8px;
+        }
+
+        .job-card .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            align-self: flex-start;
+        }
+
+        .job-card .status-badge.active {
+            background: rgba(42, 122, 90, 0.1);
+            color: var(--success);
+        }
+
+        .job-card .status-badge.closed {
+            background: rgba(201, 74, 74, 0.1);
+            color: var(--danger);
+        }
+
+        .job-card .status-badge.pending {
+            background: rgba(243, 156, 18, 0.1);
+            color: var(--warning);
+        }
+
+        /* ----- EMPTY STATE ----- */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+            grid-column: 1 / -1;
+        }
+
+        .empty-state i {
+            font-size: 60px;
+            color: var(--primary-light);
+            opacity: 0.3;
+            margin-bottom: 16px;
+        }
+
+        .empty-state h4 {
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+        }
+
+        /* ----- LOADING ----- */
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+            gap: 12px;
+            color: var(--text-muted);
+            grid-column: 1 / -1;
+        }
+
+        .loading-spinner i {
+            font-size: 28px;
+            color: var(--primary-light);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ----- MESSAGE AREA ----- */
+        .message-area {
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .message-area.show {
+            display: block;
+        }
+
+        .message-area.success {
+            background: rgba(42, 122, 90, 0.08);
+            color: var(--success);
+            border: 1px solid rgba(42, 122, 90, 0.2);
+        }
+
+        .message-area.error {
+            background: rgba(201, 74, 74, 0.08);
+            color: var(--danger);
+            border: 1px solid rgba(201, 74, 74, 0.2);
+        }
+
+        .message-area.info {
+            background: rgba(42, 111, 111, 0.08);
+            color: var(--primary);
+            border: 1px solid rgba(42, 111, 111, 0.2);
+        }
+
+        /* ----- MODAL ----- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            animation: fadeModal 0.25s ease;
+        }
+
+        @keyframes fadeModal {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 700px;
+            border-radius: 24px;
+            padding: 32px;
+            animation: slideUp 0.25s ease;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes slideUp {
+            0% { transform: translateY(20px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-content .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-content .modal-header h3 {
+            font-size: 20px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-content .modal-header .close-modal {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: 0.2s;
+            line-height: 1;
+        }
+
+        .modal-content .modal-header .close-modal:hover {
+            color: var(--danger);
+        }
+
+        .modal-content .modal-body {
+            color: var(--text-light);
+        }
+
+        .modal-content .my-job-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .modal-content .my-job-item .job-info {
+            flex: 1;
+        }
+
+        .modal-content .my-job-item .job-info h4 {
+            color: var(--text-dark);
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .modal-content .my-job-item .job-info p {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        .modal-content .my-job-item .job-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .modal-content .my-job-item .job-actions button {
+            padding: 6px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .modal-content .my-job-item .job-actions .btn-remove {
+            color: var(--danger);
+            border-color: rgba(201, 74, 74, 0.2);
+        }
+
+        .modal-content .my-job-item .job-actions .btn-remove:hover {
+            background: rgba(201, 74, 74, 0.08);
+            border-color: var(--danger);
+        }
+
+        .empty-modal-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-modal-state i {
+            font-size: 48px;
+            color: var(--primary-light);
+            opacity: 0.3;
+            margin-bottom: 12px;
+        }
+
+        /* ----- RESPONSIVE ----- */
+        @media (max-width: 1024px) {
+            .main-content {
+                padding: 20px;
+            }
+            .jobs-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 16px;
+            }
+            {% if current_user_.account_type == "client" %}
+            .post-job-section .section-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .post-job-section .header-actions {
+                width: 100%;
+            }
+
+            .post-job-section .btn-my-jobs {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .post-job-form .form-row {
+                flex-direction: column;
+            }
+
+            .post-job-form .form-group {
+                min-width: unset;
+            }
+
+            .post-job-form .btn-submit {
+                width: 100%;
+                justify-content: center;
+            }
+            {% endif %}
+
+            .search-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-section .search-input-wrapper {
+                min-width: unset;
+            }
+
+            .search-section .category-filter {
+                min-width: unset;
+            }
+
+            .jobs-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                padding: 24px;
+                margin: 10px;
+            }
+
+            .modal-content .my-job-item {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .modal-content .my-job-item .job-actions {
+                justify-content: flex-end;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 12px;
+            }
+
+            .job-card .card-actions .btn-action {
+                font-size: 12px;
+                padding: 6px 12px;
+                min-width: 60px;
+            }
+        }
+
+        /* ----- SCROLLBAR ----- */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-light);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+
+        <!-- Message Area -->
+        <div id="messageArea" class="message-area"></div>
+
+        <!-- Get current user data -->
+        <script>
+            window.currentUser = {
+                id: parseInt('{{ current_user_.id | default("0") }}'),
+                accountType: '{{ current_user_.account_type | default("") }}'
+            };
+        </script>
+
+        {% if current_user_.account_type == "client" %}
+
+        <!-- Post Job Section -->
+        <div class="post-job-section">
+            <div class="section-header">
+                <h3><i class="fas fa-plus-circle"></i> Post a New Job</h3>
+                <div class="header-actions">
+                    <button class="btn-my-jobs" onclick="openMyJobPostings()">
+                        <i class="fas fa-briefcase"></i> My Job Postings
+                        <span class="badge-count" id="myJobsCount" style="background: rgba(255,255,255,0.2); padding: 2px 10px; border-radius: 30px; font-size: 12px;">0</span>
+                    </button>
+                </div>
+            </div>
+            <form id="postJobForm" class="post-job-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Job Category <span style="color: var(--danger);">*</span></label>
+                        <select id="jobCategory" required>
+                            <option value="">Select a category (or type your own)</option>
+                            <option value="Electrical Engineering">⚡ Electrical Engineering</option>
+                            <option value="Plumbing">🔧 Plumbing</option>
+                            <option value="Masonry">🧱 Masonry</option>
+                            <option value="Carpentry">🪚 Carpentry</option>
+                            <option value="HVAC">❄️ HVAC</option>
+                            <option value="Painting">🎨 Painting</option>
+                            <option value="Landscaping">🌿 Landscaping</option>
+                            <option value="Roofing">🏠 Roofing</option>
+                            <option value="Welding">🔥 Welding</option>
+                            <option value="General Contracting">🏗️ General Contracting</option>
+                            <option value="Tiling">🛠️ Tiling</option>
+                            <option value="Other">Other (specify below)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row" id="customCategoryRow" style="display: none;">
+                    <div class="form-group">
+                        <label>Custom Category <span style="color: var(--danger);">*</span></label>
+                        <input 
+                            type="text" 
+                            id="customCategory" 
+                            placeholder="Enter your custom job category..."
+                        />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Job Description <span style="color: var(--danger);">*</span></label>
+                        <textarea 
+                            id="jobDescription" 
+                            placeholder="Describe the job requirements, responsibilities, and qualifications..." 
+                            required
+                        ></textarea>
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit" id="postJobBtn">
+                    <i class="fas fa-paper-plane"></i> Post Job
+                </button>
+            </form>
+        </div>
+        {% endif %}
+
+        <!-- Search & Filter Section -->
+        <div class="search-section">
+            <div class="search-input-wrapper">
+                <i class="fas fa-search"></i>
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="Search jobs by description or category..." 
+                />
+            </div>
+            <div class="category-filter">
+                <select id="categoryFilter">
+                    <option value="">All Categories</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Jobs Grid -->
+        <div class="jobs-grid" id="jobsGrid">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner"></i>
+                <span>Loading jobs...</span>
+            </div>
+        </div>
+    </main>
+
+    <!-- ===== MY JOB POSTINGS MODAL ===== -->
+    <div class="modal-overlay" id="myJobsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-briefcase" style="color: var(--primary-light);"></i> My Job Postings</h3>
+                <button class="close-modal" onclick="closeMyJobPostings()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="myJobsContainer">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner"></i>
+                        <span>Loading your job postings...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        (function() {
+            "use strict";
+
+            // ----- DOM REFERENCES -----
+            const jobsGrid = document.getElementById('jobsGrid');
+            const messageArea = document.getElementById('messageArea');
+            
+            // Client-only elements
+            const jobDescription = document.getElementById('jobDescription');
+            const jobCategory = document.getElementById('jobCategory');
+            const customCategory = document.getElementById('customCategory');
+            const customCategoryRow = document.getElementById('customCategoryRow');
+            const postJobForm = document.getElementById('postJobForm');
+            const postJobBtn = document.getElementById('postJobBtn');
+            const searchInput = document.getElementById('searchInput');
+            const categoryFilter = document.getElementById('categoryFilter');
+            const myJobsModal = document.getElementById('myJobsModal');
+            const myJobsContainer = document.getElementById('myJobsContainer');
+            const myJobsCount = document.getElementById('myJobsCount');
+
+            // ----- API ENDPOINTS -----
+            const API = {
+                getJobs: '/get-job-postings',
+                postJob: '/post/job',
+                removeJob: (jobId) => `/remove-job/${jobId}`,
+                decodeId: '/decode-id'
+            };
+
+            // ----- CHAT URL -----
+            const CHAT_BASE_URL = "/private_chats/get_receiver_id";
+
+            // ----- STATE -----
+            let allJobs = [];
+            let filteredJobs = [];
+            let myJobs = [];
+            let isLoading = false;
+            let decodedUserIds = {}; // Cache for decoded IDs
+
+            // Get current user ID
+            const currentUserId = window.currentUser.id || 0;
+            const isClient = window.currentUser.accountType === 'client';
+            
+
+            // ----- UTILITY FUNCTIONS -----
+            function showMessage(message, type = 'info') {
+                if (!messageArea) return;
+                messageArea.textContent = message;
+                messageArea.className = `message-area show ${type}`;
+                clearTimeout(window.messageTimeout);
+                window.messageTimeout = setTimeout(() => {
+                    if (messageArea) messageArea.classList.remove('show');
+                }, 5000);
+            }
+
+            function getInitials(name) {
+                if (!name) return 'U';
+                return name.split(' ')
+                    .map(word => word[0])
+                    .join('')
+                    .toUpperCase()
+                    .slice(0, 2);
+            }
+
+            function getStatusBadge(status) {
+                const statusMap = {
+                    'active': 'active',
+                    'open': 'active',
+                    'pending': 'pending',
+                    'closed': 'closed',
+                    'filled': 'closed'
+                };
+                const className = statusMap[status?.toLowerCase()] || 'active';
+                const displayText = status ? status.charAt(0).toUpperCase() + status.slice(1) : 'Active';
+                return `<span class="status-badge ${className}">${displayText}</span>`;
+            }
+
+            // ----- DECODE ENCODED ID -----
+            async function decodeEncodedId(encodedId) {
+                if (!encodedId) return null;
+                
+                // Check cache first
+                if (decodedUserIds[encodedId]) {
+                    return decodedUserIds[encodedId];
+                }
+
+                try {
+                    const response = await fetch(API.decodeId, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify({ encoded_id: encodedId })
+                    });
+
+                    const data = await response.json();
+                    
+                    if (data.success && data.decoded_id) {
+                        decodedUserIds[encodedId] = data.decoded_id;
+                        return data.decoded_id;
+                    }
+                    
+                    return null;
+                } catch (error) {
+                    return null;
+                }
+            }
+
+            // ----- CHECK IF USER OWNS THE JOB (using encoded comparison) -----
+            async function isJobOwner(encodedUserId) {
+                if (!currentUserId || !encodedUserId) return false;
+                
+                try {
+                    const decodedId = await decodeEncodedId(encodedUserId);
+                    return decodedId === currentUserId;
+                } catch (error) {
+                    return false;
+                }
+            }
+
+            // ----- EXTRACT CATEGORIES FROM JOBS -----
+            function extractCategories(jobs) {
+                const categories = new Set();
+                jobs.forEach(job => {
+                    if (job.job_category) {
+                        categories.add(job.job_category);
+                    }
+                });
+                return Array.from(categories).sort();
+            }
+
+            // ----- POPULATE CATEGORY FILTER -----
+            function populateCategoryFilter(categories) {
+                if (!categoryFilter) return;
+                const currentValue = categoryFilter.value;
+                categoryFilter.innerHTML = '<option value="">All Categories</option>';
+                categories.forEach(cat => {
+                    const option = document.createElement('option');
+                    option.value = cat;
+                    option.textContent = cat;
+                    categoryFilter.appendChild(option);
+                });
+                if (currentValue && categories.includes(currentValue)) {
+                    categoryFilter.value = currentValue;
+                }
+            }
+
+            // ----- RENDER JOBS (async with ownership check) -----
+            async function renderJobs(jobsData) {
+                if (!jobsGrid) return;
+                
+                
+                if (!jobsData || jobsData.length === 0) {
+                    jobsGrid.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-briefcase"></i>
+                            <h4>No jobs found</h4>
+                            <p>${searchInput ? searchInput.value ? 'Try adjusting your search or filters.' : 'Be the first to post a job opportunity!' : 'Be the first to post a job opportunity!'}</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Check ownership for all jobs
+                const ownershipPromises = jobsData.map(async (job) => {
+                    const isOwner = await isJobOwner(job.user_id);
+                    return { ...job, isOwner };
+                });
+
+                const jobsWithOwnership = await Promise.all(ownershipPromises);
+
+                let html = '';
+                jobsWithOwnership.forEach((job) => {
+                    const jobId = job.id || '';
+                    const userName = job.user_name || 'Anonymous';
+                    const userId = job.user_id || '';
+                    const avatarUrl = job.avatar_url || '';
+                    const chatUrl = CHAT_BASE_URL + `?receiver_id=${userId}`;
+                    const category = job.job_category || 'Uncategorized';
+                    const description = job.job_description || 'No description provided.';
+                    const status = job.status || 'active';
+                    const dateTime = job.date_time || '';
+                    const isOwner = job.isOwner;
+                    
+                    html += `
+                        <div class="job-card" data-job-id="${jobId}">
+                            <div class="card-header">
+                                <div class="avatar">
+                                    ${avatarUrl ? `<img src="${avatarUrl}" alt="${userName}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />` : getInitials(userName)}
+                                </div>
+                                <div class="info">
+                                    <h4>${userName}</h4>
+                                    <div class="sub-info">
+                                        <span><i class="fas fa-map-marker-alt" style="color: var(--text-muted);"></i> ${job.location || 'Location not specified'}</span>
+                                        ${isOwner ? '<span class="job-poster-badge"><i class="fas fa-user-check"></i> Your Job</span>' : ''}
+                                    </div>
+                                </div>
+                            </div>
+                            ${getStatusBadge(status)}
+                            <span class="job-category"><i class="fas fa-tag"></i> ${category}</span>
+                            <div class="job-description">${description}</div>
+                            <div class="job-meta">
+                                <span class="meta-item"><i class="far fa-calendar-alt"></i> ${dateTime ? new Date(dateTime).toLocaleDateString() : 'Date not specified'}</span>
+                            </div>
+                            <div class="card-actions">
+                                ${!isOwner ? `
+                                    <a href="${chatUrl}" class="btn-action chat" target="_self">
+                                        <i class="fas fa-comment"></i> Chat
+                                    </a>
+                                ` : `
+                                    <button class="btn-action danger" onclick="handleRemoveJob('${jobId}')">
+                                        <i class="fas fa-trash"></i> Remove
+                                    </button>
+                                `}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                jobsGrid.innerHTML = html;
+            }
+
+            // ----- FILTER JOBS -----
+            function filterJobs() {
+                if (!searchInput || !categoryFilter) return;
+                
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                const category = categoryFilter.value;
+
+                filteredJobs = allJobs.filter(job => {
+                    const matchSearch = !searchTerm || 
+                        job.job_description?.toLowerCase().includes(searchTerm) ||
+                        job.job_category?.toLowerCase().includes(searchTerm);
+                    const matchCategory = !category || job.job_category === category;
+                    return matchSearch && matchCategory;
+                });
+
+                renderJobs(filteredJobs);
+            }
+
+            // ----- LOAD JOBS -----
+            async function loadJobs() {
+                if (isLoading || !jobsGrid) {
+                    return;
+                }
+                
+                try {
+                    isLoading = true;
+                    
+                    jobsGrid.innerHTML = `
+                        <div class="loading-spinner">
+                            <i class="fas fa-spinner"></i>
+                            <span>Loading jobs...</span>
+                        </div>
+                    `;
+
+                    
+                    const response = await fetch(API.getJobs, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                        return;
+                    }
+
+                    if (data.success && data.jobs) {
+                        allJobs = data.jobs;
+                        
+                        const categories = extractCategories(allJobs);
+                        populateCategoryFilter(categories);
+                        
+                        filteredJobs = [...allJobs];
+                        await renderJobs(filteredJobs);
+                        
+                        updateMyJobsCount();
+                    } else {
+                        allJobs = [];
+                        filteredJobs = [];
+                        renderJobs([]);
+                        if (data.message && messageArea) {
+                            showMessage(data.message, 'info');
+                        }
+                    }
+                } catch (error) {
+                    if (messageArea) {
+                        showMessage('Failed to load jobs. Please try again.', 'error');
+                    }
+                    if (jobsGrid) {
+                        jobsGrid.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i>
+                                <h4>Error loading jobs</h4>
+                                <p>Please refresh the page or try again later.</p>
+                                <p style="font-size: 12px; color: #999; margin-top: 8px;">Error: ${error.message}</p>
+                            </div>
+                        `;
+                    }
+                } finally {
+                    isLoading = false;
+                }
+            }
+
+            // ----- UPDATE MY JOBS COUNT -----
+            async function updateMyJobsCount() {
+                if (!myJobsCount) return;
+                
+                if (currentUserId > 0) {
+                    let count = 0;
+                    for (const job of allJobs) {
+                        const isOwner = await isJobOwner(job.user_id);
+                        if (isOwner) count++;
+                    }
+                    myJobsCount.textContent = count;
+                    myJobsCount.style.display = count > 0 ? 'inline' : 'none';
+                } else {
+                    myJobsCount.textContent = '0';
+                    myJobsCount.style.display = 'none';
+                }
+            }
+
+            // ----- POST JOB -----
+            async function handlePostJob(e) {
+                if (!isClient || !postJobForm) return;
+                e.preventDefault();
+                
+                const description = jobDescription ? jobDescription.value.trim() : '';
+                let category = jobCategory ? jobCategory.value : '';
+
+                if (category === 'Other') {
+                    category = customCategory ? customCategory.value.trim() : '';
+                    if (!category) {
+                        showMessage('Please enter a custom category.', 'error');
+                        if (customCategory) customCategory.focus();
+                        return;
+                    }
+                }
+
+                if (!category) {
+                    showMessage('Please select or enter a job category.', 'error');
+                    if (jobCategory) jobCategory.focus();
+                    return;
+                }
+
+                if (!description) {
+                    showMessage('Please enter a job description.', 'error');
+                    if (jobDescription) jobDescription.focus();
+                    return;
+                }
+
+                if (postJobBtn) {
+                    postJobBtn.disabled = true;
+                    postJobBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Posting...';
+                }
+
+                try {
+                    const formData = new FormData();
+                    formData.append('job_description', description);
+                    formData.append('job_category', category);
+
+                    const response = await fetch(API.postJob, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const data = await response.json();
+
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                        return;
+                    }
+
+                    if (data.success) {
+                        showMessage(data.msg || 'Job posted successfully!', 'success');
+                        if (jobDescription) jobDescription.value = '';
+                        if (jobCategory) jobCategory.value = '';
+                        if (customCategory) customCategory.value = '';
+                        if (customCategoryRow) customCategoryRow.style.display = 'none';
+                        await loadJobs();
+                    } else {
+                        showMessage(data.msg || 'Failed to post job.', 'error');
+                    }
+                } catch (error) {
+                    showMessage('An error occurred. Please try again.', 'error');
+                } finally {
+                    if (postJobBtn) {
+                        postJobBtn.disabled = false;
+                        postJobBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Post Job';
+                    }
+                }
+            }
+
+            // ----- REMOVE JOB -----
+            window.handleRemoveJob = async function(jobId) {
+                if (!jobId) {
+                    showMessage('Job ID not found.', 'error');
+                    return;
+                }
+
+                if (!confirm('Are you sure you want to remove this job posting?')) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch(API.removeJob(jobId), {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                        return;
+                    }
+
+                    if (data.success) {
+                        showMessage(data.msg || 'Job removed successfully!', 'success');
+                        await loadJobs();
+                        if (myJobsModal && myJobsModal.classList.contains('active')) {
+                            loadMyJobPostings();
+                        }
+                    } else {
+                        showMessage(data.msg || 'Failed to remove job.', 'error');
+                    }
+                } catch (error) {
+                    showMessage('An error occurred. Please try again.', 'error');
+                }
+            };
+
+            // ----- MY JOB POSTINGS MODAL -----
+            window.openMyJobPostings = function() {
+                if (!myJobsModal) return;
+                myJobsModal.classList.add('active');
+                loadMyJobPostings();
+            };
+
+            window.closeMyJobPostings = function() {
+                if (!myJobsModal) return;
+                myJobsModal.classList.remove('active');
+            };
+
+            if (myJobsModal) {
+                myJobsModal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeMyJobPostings();
+                    }
+                });
+            }
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && myJobsModal && myJobsModal.classList.contains('active')) {
+                    closeMyJobPostings();
+                }
+            });
+
+            // ----- LOAD MY JOB POSTINGS -----
+            async function loadMyJobPostings() {
+                if (!myJobsContainer) return;
+                
+                try {
+                    myJobsContainer.innerHTML = `
+                        <div class="loading-spinner">
+                            <i class="fas fa-spinner"></i>
+                            <span>Loading your job postings...</span>
+                        </div>
+                    `;
+
+                    const response = await fetch(API.getJobs, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                        return;
+                    }
+
+                    if (data.success && data.jobs) {
+                        if (currentUserId > 0) {
+                            // Filter jobs owned by current user
+                            const ownershipPromises = data.jobs.map(async (job) => {
+                                const isOwner = await isJobOwner(job.user_id);
+                                return { ...job, isOwner };
+                            });
+                            
+                            const jobsWithOwnership = await Promise.all(ownershipPromises);
+                            myJobs = jobsWithOwnership.filter(job => job.isOwner);
+                        } else {
+                            myJobs = [];
+                        }
+                        
+                        if (myJobs.length === 0) {
+                            myJobsContainer.innerHTML = `
+                                <div class="empty-modal-state">
+                                    <i class="fas fa-briefcase"></i>
+                                    <h4>No job postings yet</h4>
+                                    <p>You haven't posted any jobs yet. Post your first job above!</p>
+                                </div>
+                            `;
+                            return;
+                        }
+
+                        let html = '';
+                        myJobs.forEach(job => {
+                            const category = job.job_category || 'Uncategorized';
+                            html += `
+                                <div class="my-job-item">
+                                    <div class="job-info">
+                                        <h4>${category}</h4>
+                                        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">${job.job_description ? job.job_description.substring(0, 100) + '...' : 'No description'}</p>
+                                    </div>
+                                    <div class="job-actions">
+                                        <button class="btn-remove" onclick="handleRemoveJob('${job.id || ''}')">
+                                            <i class="fas fa-trash"></i> Remove
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                        });
+
+                        myJobsContainer.innerHTML = html;
+                    } else {
+                        myJobsContainer.innerHTML = `
+                            <div class="empty-modal-state">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <h4>Error loading your jobs</h4>
+                                <p>${data.message || 'Please try again later.'}</p>
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    myJobsContainer.innerHTML = `
+                        <div class="empty-modal-state">
+                            <i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i>
+                            <h4>Error loading your jobs</h4>
+                            <p>Please refresh the page or try again later.</p>
+                        </div>
+                    `;
+                }
+            }
+
+            // ----- CUSTOM CATEGORY TOGGLE -----
+            if (jobCategory) {
+                jobCategory.addEventListener('change', function() {
+                    if (this.value === 'Other') {
+                        if (customCategoryRow) customCategoryRow.style.display = 'block';
+                        if (customCategory) customCategory.focus();
+                    } else {
+                        if (customCategoryRow) customCategoryRow.style.display = 'none';
+                        if (customCategory) customCategory.value = '';
+                    }
+                });
+            }
+
+            // ----- SEARCH & FILTER EVENTS -----
+            if (searchInput) {
+                searchInput.addEventListener('input', filterJobs);
+            }
+            if (categoryFilter) {
+                categoryFilter.addEventListener('change', filterJobs);
+            }
+
+            // ----- POST JOB FORM SUBMIT -----
+            if (postJobForm) {
+                postJobForm.addEventListener('submit', handlePostJob);
+            }
+
+            loadJobs();
+
+        })();
+    </script>
+
+</body>
+</html>

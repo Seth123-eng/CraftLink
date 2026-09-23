@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <title>CraftLink · Activate Account</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* ----- ROOT VARIABLES (matching dashboard) ----- */
+        :root {
+            --primary: #2a6f6f;
+            --primary-light: #3d8f8f;
+            --primary-dark: #1d4f4f;
+            --gradient: linear-gradient(145deg, #1d4f4f, #3d9e9e);
+            --bg: #eef2f7;
+            --card-bg: rgba(255, 255, 255, 0.65);
+            --glass-bg: rgba(255, 255, 255, 0.5);
+            --border: rgba(45, 75, 75, 0.12);
+            --text-dark: #1e2b2b;
+            --text-light: #3f5555;
+            --text-muted: #6b8a8a;
+            --danger: #c94a4a;
+            --success: #2a7a5a;
+            --radius: 20px;
+            --shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+            --glow: 0 0 30px rgba(42, 111, 111, 0.08);
+        }
+
+        /* ----- RESET & BASE ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-dark);
+            padding: 20px;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(42, 111, 111, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(42, 111, 111, 0.03) 0%, transparent 50%);
+        }
+
+        /* ----- MAIN CONTENT ----- */
+        .main-content {
+            width: 100%;
+            max-width: 500px;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* ----- CARD ----- */
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 48px 40px 40px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shine {
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+            animation: shineMove 6s infinite ease-in-out;
+            pointer-events: none;
+        }
+
+        @keyframes shineMove {
+            0% { left: -150%; }
+            50% { left: 120%; }
+            100% { left: -150%; }
+        }
+
+        /* ----- BRAND ----- */
+        .brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .brand i {
+            font-size: 32px;
+            color: var(--primary-light);
+            background: rgba(42, 111, 111, 0.1);
+            padding: 10px;
+            border-radius: 16px;
+        }
+
+        .brand h1 {
+            font-size: 28px;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .brand .tagline {
+            font-size: 13px;
+            color: var(--text-light);
+            display: block;
+            margin-top: 2px;
+            font-weight: 400;
+        }
+
+        /* ----- ICON ----- */
+        .icon-wrapper {
+            margin: 16px 0 20px;
+        }
+
+        .icon-wrapper .circle {
+            width: 100px;
+            height: 100px;
+            background: rgba(42, 111, 111, 0.08);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(42, 111, 111, 0.12);
+            position: relative;
+        }
+
+        .icon-wrapper .circle i {
+            font-size: 42px;
+            color: var(--primary-light);
+        }
+
+        .icon-wrapper .circle .badge {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            background: var(--warning);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            border: 3px solid rgba(255, 255, 255, 0.8);
+        }
+
+        /* ----- TEXT ----- */
+        .card h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .card .subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.7;
+            max-width: 360px;
+            margin: 0 auto 4px;
+        }
+
+        .card .divider {
+            width: 50px;
+            height: 3px;
+            background: var(--gradient);
+            border-radius: 10px;
+            margin: 20px auto;
+        }
+
+        /* ----- USER EMAIL ----- */
+        .user-email {
+            display: inline-block;
+            padding: 8px 20px;
+            background: rgba(42, 111, 111, 0.06);
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-dark);
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.5px;
+            margin-bottom: 20px;
+        }
+
+        /* ----- ACTIVATE BUTTON ----- */
+        .activate-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 40px;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 40px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(42, 111, 111, 0.2);
+        }
+
+        .activate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(42, 111, 111, 0.3);
+        }
+
+        .activate-btn i {
+            font-size: 16px;
+        }
+
+        /* ----- INFO BOX ----- */
+        .info-box {
+            background: rgba(42, 111, 111, 0.04);
+            border: 1px solid rgba(42, 111, 111, 0.08);
+            border-radius: 14px;
+            padding: 14px 18px;
+            margin-top: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            text-align: left;
+        }
+
+        .info-box i {
+            color: var(--primary-light);
+            font-size: 16px;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .info-box .info-content {
+            font-size: 13px;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .info-box .info-content strong {
+            color: var(--text-dark);
+        }
+
+        /* ----- STATUS ----- */
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 16px;
+            padding: 6px 16px;
+            border-radius: 30px;
+            background: rgba(243, 156, 18, 0.08);
+            font-size: 13px;
+            color: var(--warning);
+            border: 1px solid rgba(243, 156, 18, 0.12);
+        }
+
+        .status-indicator .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--warning);
+            display: inline-block;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* ----- FOOTER ----- */
+        .card .footer-text {
+            margin-top: 20px;
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            border-top: 1px solid var(--border);
+            padding-top: 16px;
+        }
+
+        /* ----- RESPONSIVE ----- */
+        @media (max-width: 520px) {
+            .card {
+                padding: 32px 24px 28px;
+            }
+
+            .card h2 {
+                font-size: 20px;
+            }
+
+            .card .subtitle {
+                font-size: 13px;
+            }
+
+            .icon-wrapper .circle {
+                width: 80px;
+                height: 80px;
+            }
+
+            .icon-wrapper .circle i {
+                font-size: 34px;
+            }
+
+            .brand h1 {
+                font-size: 24px;
+            }
+
+            .activate-btn {
+                padding: 12px 28px;
+                font-size: 14px;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .info-box {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .card {
+                padding: 24px 16px 20px;
+            }
+
+            .card h2 {
+                font-size: 18px;
+            }
+
+            .icon-wrapper .circle {
+                width: 70px;
+                height: 70px;
+            }
+
+            .icon-wrapper .circle i {
+                font-size: 28px;
+            }
+
+            .icon-wrapper .circle .badge {
+                width: 22px;
+                height: 22px;
+                font-size: 10px;
+            }
+
+            .user-email {
+                font-size: 12px;
+                padding: 6px 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-content">
+        <!-- Card -->
+        <div class="card">
+            <div class="shine"></div>
+
+            <!-- Brand -->
+            <div class="brand">
+                <i class="fas fa-handshake"></i>
+                <div>
+                    <h1>CraftLink</h1>
+                    <span class="tagline">Professional Network</span>
+                </div>
+            </div>
+
+            <!-- Icon -->
+            <div class="icon-wrapper">
+                <div class="circle">
+                    <i class="fas fa-user-clock"></i>
+                    <span class="badge"><i class="fas fa-exclamation"></i></span>
+                </div>
+            </div>
+
+            <!-- Heading -->
+            <h2>Account Activation Needed</h2>
+
+            <!-- Subtitle -->
+            <p class="subtitle">
+                Please activate your account to start connecting with professionals
+                and accessing all features.
+            </p>
+
+            <!-- Divider -->
+            <div class="divider"></div>
+
+            <!-- User Email -->
+            <div class="user-email">{{ info }}</div>
+
+            <!-- Activate Button -->
+            {% if activation_link != None %}
+                <a href="{{ activation_link }}" class="activate-btn">
+                    <i class="fas fa-paper-plane"></i> Send Activation Link
+                </a>
+            {% endif %}
+
+            <!-- Status Indicator -->
+            <div class="status-indicator">
+                <span class="dot"></span>
+                Awaiting Activation
+            </div>
+
+            <!-- Info Box -->
+            <div class="info-box">
+                <i class="fas fa-info-circle"></i>
+                <div class="info-content">
+                    <strong>Need help?</strong> If you didn't receive the activation email or need assistance, 
+                    please <a href="#" style="color: var(--primary); text-decoration: none; font-weight: 500;">contact support</a>.
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer-text">
+                &copy; 2026 CraftLink. All rights reserved.
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

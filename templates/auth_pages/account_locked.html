@@ -1,0 +1,180 @@
+
+{% extends 'base.html' %}
+{% block head %}
+    {% block title %} {% endblock %}
+    {{ super() }}
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f4f6fb;
+      --card: #ffffff;
+      --accent1: #7c5cff;
+      --accent2: #00c4a7;
+      --muted: #555;
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 20px;
+    }
+
+    .reset-container {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+      max-width: 420px;
+      width: 100%;
+      padding: 40px 30px;
+      text-align: center;
+    }
+
+    .logo-badge {
+      width: 70px;
+      height: 70px;
+      border-radius: 20px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      margin: 0 auto 16px;
+      box-shadow: 0 8px 20px rgba(92, 65, 200, 0.28);
+    }
+
+    .logo-badge svg {
+      width: 38px;
+      height: 38px;
+      fill: #fff;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #222;
+      margin-bottom: 8px;
+    }
+
+    p {
+      font-size: 15px;
+      color: var(--muted);
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 16px;
+    }
+
+    label {
+      text-align: left;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+
+    .email {
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      background: #f9f9f9;
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%;
+    }
+
+    input[type="email"]:focus, input[type="password"]:focus, input[type="text"]:focus {
+      border-color: var(--accent1);
+      box-shadow: 0 0 6px rgba(124, 92, 255, 0.3);
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    button {
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      color: white;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 18px;
+      font-size: 14px;
+      color: var(--accent1);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+      .reset-container {
+        padding: 32px 20px;
+      }
+      h1 {
+        font-size: 20px;
+      }
+    }
+  </style>
+  
+{% endblock %}
+
+{% block content %}
+
+  <div class="reset-container">
+    <div class="logo-badge">
+      <svg viewBox="0 0 24 24">
+        <path d="M3 8.5C3 5.46 5.46 3 8.5 3h7C19.54 3 22 5.46 22 8.5v3c0 3.04-2.46 5.5-5.5 5.5H12l-4 3v-3H8.5C5.46 17 3 14.54 3 11.5v-3z" />
+      </svg>
+    </div>
+
+    <h1 style="text-decoration:underline; color:red; font-size:larger;">Account locked</h1>
+      <div>
+          <h1> Reason for account lock </h1>
+          <br>
+          <p> You were locked out due to too many failed login attempts(  <i> <span style="color:green;" > Failed attempts : {{ user.failed_login_attempts }} </span> </i> )</p>
+          <br>
+          <p> Your account has just been momentarily suspended and you have a chance to do the following after 24hrs. </p>
+          <ol>
+              <li> Attempt Login </li>
+              <li> Reset Account Credentials </li>
+          <ol>
+      </div>
+
+{% endblock %}

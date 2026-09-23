@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <title>CraftLink · Help Center</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* ----- ROOT VARIABLES (matching dashboard) ----- */
+        :root {
+            --primary: #2a6f6f;
+            --primary-light: #3d8f8f;
+            --primary-dark: #1d4f4f;
+            --gradient: linear-gradient(145deg, #1d4f4f, #3d9e9e);
+            --bg: #eef2f7;
+            --card-bg: rgba(255, 255, 255, 0.65);
+            --glass-bg: rgba(255, 255, 255, 0.5);
+            --border: rgba(45, 75, 75, 0.12);
+            --text-dark: #1e2b2b;
+            --text-light: #3f5555;
+            --text-muted: #6b8a8a;
+            --danger: #c94a4a;
+            --success: #2a7a5a;
+            --warning: #f39c12;
+            --radius: 20px;
+            --shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+            --glow: 0 0 30px rgba(42, 111, 111, 0.08);
+        }
+
+        /* ----- RESET & BASE ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            color: var(--text-dark);
+            padding: 20px;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(42, 111, 111, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(42, 111, 111, 0.03) 0%, transparent 50%);
+        }
+
+        /* ----- MAIN CONTENT ----- */
+        .main-content {
+            width: 100%;
+            max-width: 1200px;
+            padding: 30px 40px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ----- TOP BAR ----- */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .top-bar .left-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.25s;
+        }
+
+        .back-link:hover {
+            color: var(--primary);
+            transform: translateX(-4px);
+        }
+
+        .top-bar h1 {
+            font-size: 24px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .top-bar h1 i {
+            color: var(--primary-light);
+        }
+
+        .btn-contact {
+            padding: 12px 24px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-contact:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(42, 111, 111, 0.2);
+        }
+
+        /* ----- HELP SECTIONS ----- */
+        .help-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 24px;
+            margin-top: 8px;
+        }
+
+        .help-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px 24px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .help-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+            border-color: rgba(42, 111, 111, 0.2);
+        }
+
+        .help-card .card-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            margin-bottom: 16px;
+        }
+
+        .help-card h3 {
+            color: var(--text-dark);
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .help-card p {
+            color: var(--text-light);
+            font-size: 14px;
+            line-height: 1.6;
+            flex: 1;
+            margin-bottom: 16px;
+        }
+
+        .help-card .help-steps {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 16px 0;
+        }
+
+        .help-card .help-steps li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 0;
+            color: var(--text-light);
+            font-size: 14px;
+            line-height: 1.5;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .help-card .help-steps li:last-child {
+            border-bottom: none;
+        }
+
+        .help-card .help-steps li i {
+            color: var(--primary-light);
+            margin-top: 3px;
+            font-size: 14px;
+        }
+
+        .help-card .help-tip {
+            background: rgba(42, 111, 111, 0.06);
+            padding: 12px 16px;
+            border-radius: 10px;
+            border-left: 3px solid var(--primary);
+            font-size: 13px;
+            color: var(--text-light);
+            margin-top: auto;
+        }
+
+        .help-card .help-tip i {
+            color: var(--primary-light);
+            margin-right: 6px;
+        }
+
+        /* ----- FAQ SECTION ----- */
+        .faq-section {
+            margin-top: 40px;
+        }
+
+        .faq-section h2 {
+            font-size: 22px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .faq-section h2 i {
+            color: var(--primary-light);
+        }
+
+        .faq-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+        }
+
+        .faq-item {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+        }
+
+        .faq-item:hover {
+            border-color: rgba(42, 111, 111, 0.2);
+        }
+
+        .faq-item .faq-question {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .faq-item .faq-question i {
+            color: var(--primary-light);
+            font-size: 18px;
+            margin-top: 2px;
+        }
+
+        .faq-item .faq-question h4 {
+            color: var(--text-dark);
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .faq-item .faq-answer {
+            color: var(--text-light);
+            font-size: 14px;
+            line-height: 1.6;
+            padding-left: 30px;
+        }
+
+        /* ----- MESSAGE AREA ----- */
+        .message-area {
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .message-area.show {
+            display: block;
+        }
+
+        .message-area.success {
+            background: rgba(42, 122, 90, 0.08);
+            color: var(--success);
+            border: 1px solid rgba(42, 122, 90, 0.2);
+        }
+
+        .message-area.error {
+            background: rgba(201, 74, 74, 0.08);
+            color: var(--danger);
+            border: 1px solid rgba(201, 74, 74, 0.2);
+        }
+
+        .message-area.info {
+            background: rgba(42, 111, 111, 0.08);
+            color: var(--primary);
+            border: 1px solid rgba(42, 111, 111, 0.2);
+        }
+
+        /* ----- CONTACT MODAL ----- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            animation: fadeModal 0.25s ease;
+        }
+
+        @keyframes fadeModal {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 560px;
+            border-radius: 24px;
+            padding: 32px;
+            animation: slideUp 0.25s ease;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        @keyframes slideUp {
+            0% { transform: translateY(20px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-content .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-content .modal-header h3 {
+            font-size: 20px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-content .modal-header h3 i {
+            color: var(--primary-light);
+        }
+
+        .modal-content .modal-header .close-modal {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: 0.2s;
+            line-height: 1;
+        }
+
+        .modal-content .modal-header .close-modal:hover {
+            color: var(--danger);
+        }
+
+        .modal-content .modal-body {
+            color: var(--text-light);
+        }
+
+        .modal-content .modal-body .form-group {
+            margin-bottom: 20px;
+        }
+
+        .modal-content .modal-body .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 6px;
+        }
+
+        .modal-content .modal-body .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: #ffffff;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
+            color: var(--text-dark);
+            font-family: inherit;
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .modal-content .modal-body .form-group textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(42, 111, 111, 0.1);
+        }
+
+        .modal-content .modal-body .form-group .char-count {
+            text-align: right;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .modal-content .modal-body .form-group .char-count.limit {
+            color: var(--danger);
+        }
+
+        .modal-content .modal-body .btn-submit {
+            width: 100%;
+            padding: 14px 32px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .modal-content .modal-body .btn-submit:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(42, 111, 111, 0.2);
+        }
+
+        .modal-content .modal-body .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ----- RESPONSIVE ----- */
+        @media (max-width: 1024px) {
+            .main-content {
+                padding: 20px;
+            }
+            .help-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+            .faq-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 16px;
+            }
+
+            .top-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .top-bar .left-section {
+                flex-wrap: wrap;
+            }
+
+            .btn-contact {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .help-grid {
+                grid-template-columns: 1fr;
+            }
+            .faq-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                padding: 24px;
+                margin: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 12px;
+            }
+
+            .top-bar h1 {
+                font-size: 20px;
+            }
+
+            .help-card {
+                padding: 20px;
+            }
+        }
+
+        /* ----- SCROLLBAR ----- */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-light);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+
+        <!-- Message Area -->
+        <div id="messageArea" class="message-area"></div>
+
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="left-section">
+                <h1>
+                    <i class="fas fa-question-circle"></i> Help Center
+                </h1>
+            </div>
+            <button class="btn-contact" onclick="openContactModal()">
+                <i class="fas fa-envelope"></i> Contact Us
+            </button>
+        </div>
+
+        <!-- Help Grid -->
+        <div class="help-grid">
+            <!-- Card 1: Getting Started -->
+            <div class="help-card">
+                <div class="card-icon">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <h3>Getting Started</h3>
+                <p>New to CraftLink? Here's how to get started with our platform:</p>
+                <ul class="help-steps">
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span><strong>Create an account</strong> – Sign up as a client or craftsperson</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span><strong>Complete your profile</strong> – Add your skills, experience, and location</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span><strong>Post or find jobs</strong> – Clients post jobs, craftspeople apply</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span><strong>Connect &amp; collaborate</strong> – Use our chat feature to discuss details</span>
+                    </li>
+                </ul>
+                <div class="help-tip">
+                    <i class="fas fa-lightbulb"></i>
+                    Tip: Complete your profile to increase your visibility!
+                </div>
+            </div>
+
+            <!-- Card 2: For Clients -->
+            <div class="help-card">
+                <div class="card-icon">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <h3>For Clients</h3>
+                <p>Post jobs and find the right craftsperson for your project:</p>
+                <ul class="help-steps">
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span><strong>Post a job</strong> – Describe your project and requirements</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span><strong>Review applicants</strong> – Browse through craftsperson profiles</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span><strong>Communicate</strong> – Chat with potential hires to discuss details</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span><strong>Manage jobs</strong> – Track your job postings and remove them when done</span>
+                    </li>
+                </ul>
+                <div class="help-tip">
+                    <i class="fas fa-lightbulb"></i>
+                    Tip: Be specific in your job description to attract the right candidates!
+                </div>
+            </div>
+
+            <!-- Card 3: For Craftspeople -->
+            <div class="help-card">
+                <div class="card-icon">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <h3>For Craftspeople</h3>
+                <p>Find jobs and grow your business:</p>
+                <ul class="help-steps">
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span><strong>Browse jobs</strong> – Explore available job postings</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span><strong>Connect with clients</strong> – Chat with clients who posted jobs</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span><strong>Build your reputation</strong> – Deliver quality work and get reviews</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span><strong>Manage applications</strong> – Keep track of jobs you're interested in</span>
+                    </li>
+                </ul>
+                <div class="help-tip">
+                    <i class="fas fa-lightbulb"></i>
+                    Tip: Respond quickly to client messages to stand out!
+                </div>
+            </div>
+
+            <!-- Card 4: Chat & Communication -->
+            <div class="help-card">
+                <div class="card-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h3>Chat &amp; Communication</h3>
+                <p>Stay connected with clients and craftspeople:</p>
+                <ul class="help-steps">
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span><strong>Start a chat</strong> – Click the chat button on any job posting</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span><strong>Discuss details</strong> – Ask questions, share information, and negotiate</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span><strong>Private conversations</strong> – All chats are private and secure</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span><strong>Stay organized</strong> – Keep all your conversations in one place</span>
+                    </li>
+                </ul>
+                <div class="help-tip">
+                    <i class="fas fa-lightbulb"></i>
+                    Tip: Be professional and responsive in all communications!
+                </div>
+            </div>
+
+            <!-- Card 5: Account & Security -->
+            <div class="help-card">
+                <div class="card-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Account &amp; Security</h3>
+                <p>Keep your account safe and secure:</p>
+                <ul class="help-steps">
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span><strong>Use a strong password</strong> – Combine letters, numbers, and symbols</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span><strong>Keep your profile updated</strong> – Maintain accurate information</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span><strong>Report issues</strong> – Contact us if you encounter any problems</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span><strong>Privacy matters</strong> – We protect your personal information</span>
+                    </li>
+                </ul>
+                <div class="help-tip">
+                    <i class="fas fa-lightbulb"></i>
+                    Tip: Always log out when using a shared device!
+                </div>
+            </div>
+
+            <!-- Card 6: Need More Help? -->
+            <div class="help-card">
+                <div class="card-icon">
+                    <i class="fas fa-life-ring"></i>
+                </div>
+                <h3>Need More Help?</h3>
+                <p>If you can't find what you're looking for, we're here to help:</p>
+                <ul class="help-steps">
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span><strong>Contact us directly</strong> – Use the "Contact Us" button above</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span><strong>Check the FAQ</strong> – See if your question is answered below</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span><strong>Provide feedback</strong> – Let us know how we can improve</span>
+                    </li>
+                </ul>
+                <div class="help-tip">
+                    <i class="fas fa-lightbulb"></i>
+                    We typically respond to all inquiries within 24 hours!
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="faq-section">
+            <h2><i class="fas fa-question-circle"></i> Frequently Asked Questions</h2>
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <i class="fas fa-chevron-right"></i>
+                        <h4>How do I create an account?</h4>
+                    </div>
+                    <div class="faq-answer">
+                        Click on the "Sign Up" button on the homepage. Choose whether you want to register as a client or a craftsperson, fill in your details, and follow the verification steps.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <i class="fas fa-chevron-right"></i>
+                        <h4>How do I post a job?</h4>
+                    </div>
+                    <div class="faq-answer">
+                        If you're registered as a client, navigate to the Job Postings page and use the "Post a New Job" section. Fill in the category and description, then click "Post Job".
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <i class="fas fa-chevron-right"></i>
+                        <h4>How do I find jobs?</h4>
+                    </div>
+                    <div class="faq-answer">
+                        If you're registered as a craftsperson, browse the Job Postings page. Use the search bar and category filter to find jobs that match your skills and interests.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <i class="fas fa-chevron-right"></i>
+                        <h4>How do I chat with someone?</h4>
+                    </div>
+                    <div class="faq-answer">
+                        On any job posting, click the "Chat" button. This will open a private conversation with the job poster where you can discuss details, ask questions, and negotiate.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <i class="fas fa-chevron-right"></i>
+                        <h4>How do I remove my job posting?</h4>
+                    </div>
+                    <div class="faq-answer">
+                        If you're the job owner, you'll see a "Remove" button on your job card. Click it and confirm to remove the posting. You can also manage your jobs from the "My Job Postings" modal.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <i class="fas fa-chevron-right"></i>
+                        <h4>Is CraftLink free to use?</h4>
+                    </div>
+                    <div class="faq-answer">
+                        Yes! CraftLink is completely free for both clients and craftspeople. We believe in connecting people without barriers.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <i class="fas fa-chevron-right"></i>
+                        <h4>How do I update my profile?</h4>
+                    </div>
+                    <div class="faq-answer">
+                        Visit your profile page by clicking on your avatar or name. From there, you can update your personal information, skills, and preferences.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <i class="fas fa-chevron-right"></i>
+                        <h4>What should I do if I encounter an issue?</h4>
+                    </div>
+                    <div class="faq-answer">
+                        Use the "Contact Us" button at the top of this page to send us a message. Our support team will get back to you as soon as possible.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ===== CONTACT MODAL ===== -->
+    <div class="modal-overlay" id="contactModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-envelope"></i> Contact Us</h3>
+                <button class="close-modal" onclick="closeContactModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="modalMessageArea" style="margin-bottom: 16px;"></div>
+                <form id="contactForm">
+                    <div class="form-group">
+                        <label for="contactMessage">Message <span style="color: var(--danger);">*</span></label>
+                        <textarea 
+                            id="contactMessage" 
+                            placeholder="Describe your issue, question, or feedback in detail..."
+                            required
+                            maxlength="500"
+                            oninput="updateCharCount()"
+                        ></textarea>
+                        <div class="char-count" id="charCount">0 / 500</div>
+                    </div>
+                    <button type="submit" class="btn-submit" id="contactSubmitBtn">
+                        <i class="fas fa-paper-plane"></i> Send Message
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        (function() {
+            "use strict";
+
+            // ----- DOM REFERENCES -----
+            const contactModal = document.getElementById('contactModal');
+            const contactForm = document.getElementById('contactForm');
+            const contactMessage = document.getElementById('contactMessage');
+            const contactSubmitBtn = document.getElementById('contactSubmitBtn');
+            const charCount = document.getElementById('charCount');
+            const modalMessageArea = document.getElementById('modalMessageArea');
+            const messageArea = document.getElementById('messageArea');
+
+            // ----- API ENDPOINTS -----
+            const API = {
+                contactUs: '/add_to_contact_us'
+            };
+
+            // ----- UTILITY FUNCTIONS -----
+            function showMessage(message, type = 'info', target = 'messageArea') {
+                const element = target === 'modal' ? modalMessageArea : messageArea;
+                if (!element) return;
+                
+                element.textContent = message;
+                element.className = `message-area show ${type}`;
+                
+                clearTimeout(element._timeout);
+                element._timeout = setTimeout(() => {
+                    element.classList.remove('show');
+                }, 5000);
+            }
+
+            function updateCharCount() {
+                if (!contactMessage || !charCount) return;
+                const length = contactMessage.value.length;
+                const max = 500;
+                charCount.textContent = `${length} / ${max}`;
+                charCount.classList.toggle('limit', length > max * 0.8);
+            }
+
+            // ----- CONTACT MODAL -----
+            window.openContactModal = function() {
+                if (!contactModal) return;
+                contactModal.classList.add('active');
+                if (contactMessage) {
+                    contactMessage.focus();
+                }
+                // Clear previous messages
+                if (modalMessageArea) {
+                    modalMessageArea.className = 'message-area';
+                    modalMessageArea.textContent = '';
+                }
+            };
+
+            window.closeContactModal = function() {
+                if (!contactModal) return;
+                contactModal.classList.remove('active');
+                if (contactForm) {
+                    contactForm.reset();
+                }
+                if (charCount) {
+                    charCount.textContent = '0 / 500';
+                    charCount.classList.remove('limit');
+                }
+                if (modalMessageArea) {
+                    modalMessageArea.className = 'message-area';
+                    modalMessageArea.textContent = '';
+                }
+            };
+
+            // Close modal on overlay click
+            if (contactModal) {
+                contactModal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeContactModal();
+                    }
+                });
+            }
+
+            // Close modal on Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && contactModal && contactModal.classList.contains('active')) {
+                    closeContactModal();
+                }
+            });
+
+            // ----- CONTACT FORM SUBMIT -----
+            if (contactForm) {
+                contactForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const message = contactMessage ? contactMessage.value.trim() : '';
+                    
+                    if (!message) {
+                        showMessage('Please enter a message.', 'error', 'modal');
+                        if (contactMessage) contactMessage.focus();
+                        return;
+                    }
+
+                    if (contactSubmitBtn) {
+                        contactSubmitBtn.disabled = true;
+                        contactSubmitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+                    }
+
+                    try {
+                        const formData = new FormData();
+                        formData.append('message', message);
+
+                        const response = await fetch(API.contactUs, {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        });
+
+                        const data = await response.json();
+
+                        if (data.redirect) {
+                            window.location.href = data.redirect;
+                            return;
+                        }
+
+                        if (data.success) {
+                            showMessage(data.msg || 'Message sent successfully! We\'ll get back to you soon.', 'success', 'modal');
+                            if (contactMessage) contactMessage.value = '';
+                            if (charCount) {
+                                charCount.textContent = '0 / 500';
+                                charCount.classList.remove('limit');
+                            }
+                            
+                            // Auto-close after 3 seconds
+                            setTimeout(() => {
+                                closeContactModal();
+                                showMessage('Thank you for your message! We\'ll respond within 24 hours.', 'success');
+                            }, 3000);
+                        } else {
+                            showMessage(data.msg || 'Failed to send message. Please try again.', 'error', 'modal');
+                        }
+                    } catch (error) {
+                        showMessage('An error occurred. Please try again.', 'error', 'modal');
+                    } finally {
+                        if (contactSubmitBtn) {
+                            contactSubmitBtn.disabled = false;
+                            contactSubmitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
+                        }
+                    }
+                });
+            }
+
+            // ----- INIT CHAR COUNT -----
+            if (contactMessage) {
+                contactMessage.addEventListener('input', updateCharCount);
+                updateCharCount();
+            }
+
+        })();
+    </script>
+
+</body>
+</html>

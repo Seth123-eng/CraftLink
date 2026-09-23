@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <title>CraftLink · Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* ----- ROOT VARIABLES (matching dashboard) ----- */
+        :root {
+            --primary: #2a6f6f;
+            --primary-light: #3d8f8f;
+            --primary-dark: #1d4f4f;
+            --gradient: linear-gradient(145deg, #1d4f4f, #3d9e9e);
+            --bg: #eef2f7;
+            --card-bg: rgba(255, 255, 255, 0.65);
+            --glass-bg: rgba(255, 255, 255, 0.5);
+            --border: rgba(45, 75, 75, 0.12);
+            --text-dark: #1e2b2b;
+            --text-light: #3f5555;
+            --text-muted: #6b8a8a;
+            --danger: #c94a4a;
+            --success: #2a7a5a;
+            --warning: #f39c12;
+            --radius: 20px;
+            --shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+            --glow: 0 0 30px rgba(42, 111, 111, 0.08);
+        }
+
+        /* ----- RESET & BASE ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            color: var(--text-dark);
+            padding: 20px;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(42, 111, 111, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(42, 111, 111, 0.03) 0%, transparent 50%);
+        }
+
+        /* ----- MAIN CONTENT ----- */
+        .main-content {
+            width: 100%;
+            max-width: 1400px;
+            padding: 30px 40px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            margin: 0 auto;
+        }
+
+        /* ----- TOP HEADER ----- */
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .top-header .page-title h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .top-header .page-title h2 i {
+            color: var(--primary-light);
+            font-size: 26px;
+        }
+
+        .top-header .page-title p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .top-header .header-actions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .top-header .header-actions .admin-badge {
+            padding: 6px 16px;
+            border-radius: 30px;
+            background: rgba(42, 111, 111, 0.1);
+            color: var(--primary);
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .top-header .header-actions .icon-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.5);
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-size: 18px;
+            backdrop-filter: blur(4px);
+            position: relative;
+        }
+
+        .top-header .header-actions .icon-btn:hover {
+            background: rgba(42, 111, 111, 0.1);
+            color: var(--primary);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        /* ----- STATS GRID ----- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            transition: all 0.3s;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            border-color: rgba(42, 111, 111, 0.2);
+        }
+
+        .stat-card .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .stat-card .stat-icon {
+            font-size: 28px;
+            color: var(--primary-light);
+            opacity: 0.8;
+        }
+
+        .stat-card .stat-trend {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stat-card .stat-trend.up {
+            background: rgba(42, 122, 90, 0.1);
+            color: var(--success);
+        }
+
+        .stat-card .stat-trend.down {
+            background: rgba(201, 74, 74, 0.1);
+            color: var(--danger);
+        }
+
+        .stat-card .stat-number {
+            font-size: 34px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .stat-card .stat-label {
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .stat-card .stat-shine {
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(42, 111, 111, 0.04) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        /* ----- MESSAGE AREA (for errors) ----- */
+        .message-area {
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .message-area.show {
+            display: block;
+        }
+
+        .message-area.error {
+            background: rgba(201, 74, 74, 0.08);
+            color: var(--danger);
+            border: 1px solid rgba(201, 74, 74, 0.2);
+        }
+
+        /* ----- RESPONSIVE ----- */
+        @media (max-width: 1024px) {
+            .main-content {
+                padding: 20px;
+            }
+
+            .top-header .page-title h2 {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 16px;
+            }
+
+            .top-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .top-header .header-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+
+            .stat-card .stat-number {
+                font-size: 28px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 12px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .top-header .page-title h2 {
+                font-size: 20px;
+            }
+
+            .top-header .header-actions .admin-badge {
+                font-size: 11px;
+                padding: 4px 12px;
+            }
+        }
+
+        /* ----- SCROLLBAR ----- */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-light);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+        <!-- Message Area -->
+        <div id="messageArea" class="message-area"></div>
+
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="page-title">
+                <h2><i class="fas fa-crown"></i></h2>
+                <p>Monitor platform activity, users, and performance metrics</p>
+            </div>
+            <div class="header-actions">
+                <span class="admin-badge"><i class="fas fa-shield-alt"></i> Admin</span>
+                <button class="icon-btn" onclick="refreshStats()" title="Refresh Stats">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-shine"></div>
+                <div class="stat-header">
+                    <div class="stat-icon"><i class="fas fa-users"></i></div>
+                    <span class="stat-trend up"><i class="fas fa-arrow-up"></i> 12%</span>
+                </div>
+                <div class="stat-number" id="totalUsers">Loading...</div>
+                <div class="stat-label">Total Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-shine"></div>
+                <div class="stat-header">
+                    <div class="stat-icon"><i class="fas fa-briefcase"></i></div>
+                    <span class="stat-trend up"><i class="fas fa-arrow-up"></i> 8%</span>
+                </div>
+                <div class="stat-number" id="totalJobs">Loading...</div>
+                <div class="stat-label">Job Postings</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-shine"></div>
+                <div class="stat-header">
+                    <div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div>
+                    <span class="stat-trend up"><i class="fas fa-arrow-up"></i> 23%</span>
+                </div>
+                <div class="stat-number" id="totalRevenue">Loading...</div>
+                <div class="stat-label">Total Revenue</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-shine"></div>
+                <div class="stat-header">
+                    <div class="stat-icon"><i class="fas fa-star"></i></div>
+                    <span class="stat-trend down"><i class="fas fa-arrow-down"></i> 2%</span>
+                </div>
+                <div class="stat-number" id="avgRating">4.8</div>
+                <div class="stat-label">Avg Rating</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-shine"></div>
+                <div class="stat-header">
+                    <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
+                    <span class="stat-trend up"><i class="fas fa-arrow-up"></i> 15%</span>
+                </div>
+                <div class="stat-number" id="totalPortfolios">892</div>
+                <div class="stat-label">Portfolios Created</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        (function() {
+            "use strict";
+
+            // ----- DOM REFERENCES -----
+            const totalUsersEl = document.getElementById('totalUsers');
+            const totalJobsEl = document.getElementById('totalJobs');
+            const totalRevenueEl = document.getElementById('totalRevenue');
+            const messageArea = document.getElementById('messageArea');
+
+            // ----- API ENDPOINTS -----
+            const API = {
+                totalUsers: '/total_users',
+                totalJobs: '/total_job_posts',
+                totalRevenue: '/total_revenue'
+            };
+
+            // ----- UTILITY FUNCTIONS -----
+            function showMessage(message, type = 'error') {
+                if (!messageArea) return;
+                messageArea.textContent = message;
+                messageArea.className = `message-area show ${type}`;
+                clearTimeout(window.messageTimeout);
+                window.messageTimeout = setTimeout(() => {
+                    if (messageArea) messageArea.classList.remove('show');
+                }, 5000);
+            }
+
+            function formatNumber(num) {
+                if (num >= 1000) {
+                    return (num / 1000).toFixed(1) + 'k';
+                }
+                return num.toString();
+            }
+
+            function formatCurrency(amount) {
+                if (amount >= 1000) {
+                    return 'KSH' + (amount / 1000).toFixed(1) + 'k';
+                }
+                return 'KSH' + amount.toFixed(2);
+            }
+
+            // ----- LOAD TOTAL USERS -----
+            async function loadTotalUsers() {
+                try {
+                    const response = await fetch(API.totalUsers, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                        return;
+                    }
+
+                    if (data.success) {
+                        const count = data.total_users || 0;
+                        totalUsersEl.textContent = formatNumber(count);
+                        return count;
+                    } else {
+                        showMessage(data.message || 'Failed to load user count', 'error');
+                        totalUsersEl.textContent = 'Error';
+                        return 0;
+                    }
+                } catch (error) {
+                    showMessage('Failed to load user statistics', 'error');
+                    totalUsersEl.textContent = 'Error';
+                    return 0;
+                }
+            }
+
+            // ----- LOAD TOTAL JOBS -----
+            async function loadTotalJobs() {
+                try {
+                    const response = await fetch(API.totalJobs, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                        return;
+                    }
+
+                    if (data.success) {
+                        const count = data.total_job_posts || 0;
+                        totalJobsEl.textContent = formatNumber(count);
+                        return count;
+                    } else {
+                        showMessage(data.message || 'Failed to load job count', 'error');
+                        totalJobsEl.textContent = 'Error';
+                        return 0;
+                    }
+                } catch (error) {
+                    showMessage('Failed to load job statistics', 'error');
+                    totalJobsEl.textContent = 'Error';
+                    return 0;
+                }
+            }
+
+            // ----- LOAD TOTAL REVENUE -----
+            async function loadTotalRevenue() {
+                try {
+                    const response = await fetch(API.totalRevenue, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                        return;
+                    }
+
+                    if (data.success) {
+                        const amount = data.total_revenue || 0;
+                        totalRevenueEl.textContent = formatCurrency(amount);
+                        return amount;
+                    } else {
+                        // If no revenue data, show 0
+                        totalRevenueEl.textContent = 'KSH0.00';
+                        return 0;
+                    }
+                } catch (error) {
+                    totalRevenueEl.textContent = 'KSH0.00';
+                    return 0;
+                }
+            }
+
+            // ----- REFRESH ALL STATS -----
+            window.refreshStats = async function() {
+                const btn = document.querySelector('.icon-btn i');
+                if (btn) {
+                    btn.className = 'fas fa-spinner fa-spin';
+                }
+
+                await Promise.all([
+                    loadTotalUsers(),
+                    loadTotalJobs(),
+                    loadTotalRevenue()
+                ]);
+
+                if (btn) {
+                    setTimeout(() => {
+                        btn.className = 'fas fa-sync-alt';
+                    }, 500);
+                }
+            };
+
+            // ----- INIT -----
+            async function init() {
+                // Load stats
+                await refreshStats();
+
+                // Auto-refresh stats every 60 seconds
+                setInterval(refreshStats, 60000);
+            }
+
+            init();
+
+        })();
+    </script>
+
+</body>
+</html>

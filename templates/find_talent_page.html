@@ -1,0 +1,2037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <title>CraftLink · Find Talent</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* ----- ROOT VARIABLES (matching dashboard) ----- */
+        :root {
+            --primary: #2a6f6f;
+            --primary-light: #3d8f8f;
+            --primary-dark: #1d4f4f;
+            --gradient: linear-gradient(145deg, #1d4f4f, #3d9e9e);
+            --bg: #eef2f7;
+            --card-bg: rgba(255, 255, 255, 0.65);
+            --glass-bg: rgba(255, 255, 255, 0.5);
+            --border: rgba(45, 75, 75, 0.12);
+            --text-dark: #1e2b2b;
+            --text-light: #3f5555;
+            --text-muted: #6b8a8a;
+            --danger: #c94a4a;
+            --success: #2a7a5a;
+            --warning: #f39c12;
+            --radius: 20px;
+            --shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+            --glow: 0 0 30px rgba(42, 111, 111, 0.08);
+        }
+
+        /* ----- RESET & BASE ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            color: var(--text-dark);
+            padding: 20px;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(42, 111, 111, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(42, 111, 111, 0.03) 0%, transparent 50%);
+        }
+
+        /* ----- MAIN CONTENT ----- */
+        .main-content {
+            width: 100%;
+            max-width: 1200px;
+            padding: 30px 40px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.25s;
+            margin-bottom: 20px;
+        }
+
+        .back-link:hover {
+            color: var(--primary);
+            transform: translateX(-4px);
+        }
+
+        /* ----- SEARCH SECTION ----- */
+        .search-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-section .search-input-wrapper {
+            flex: 1;
+            position: relative;
+            min-width: 200px;
+        }
+
+        .search-section .search-input-wrapper input {
+            width: 100%;
+            padding: 12px 16px 12px 44px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: #ffffff;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
+            color: var(--text-dark);
+        }
+
+        .search-section .search-input-wrapper input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(42, 111, 111, 0.1);
+        }
+
+        .search-section .search-input-wrapper i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .search-section .btn-filter {
+            padding: 12px 24px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .search-section .btn-filter:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(42, 111, 111, 0.2);
+        }
+
+        .search-section .btn-filter .badge-count {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 10px;
+            border-radius: 30px;
+            font-size: 12px;
+        }
+
+        .search-section .btn-filter.clear {
+            background: var(--bg);
+            color: var(--text-dark);
+        }
+
+        .search-section .btn-filter.clear:hover {
+            background: rgba(201, 74, 74, 0.08);
+            color: var(--danger);
+            border-color: var(--danger);
+        }
+
+        /* ----- TECHNICIANS GRID ----- */
+        .technicians-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 24px;
+            margin-top: 8px;
+        }
+
+        .technician-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .technician-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+            border-color: rgba(42, 111, 111, 0.2);
+        }
+
+        .technician-card .card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .technician-card .avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .technician-card .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .technician-card .card-header .info h4 {
+            font-size: 18px;
+            color: var(--text-dark);
+            margin-bottom: 2px;
+        }
+
+        .technician-card .card-header .info .sub-info {
+            font-size: 13px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .technician-card .card-header .info .sub-info .rating {
+            color: #f39c12;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .technician-card .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex: 1;
+        }
+
+        .technician-card .skills-container .skill-tag {
+            background: rgba(42, 111, 111, 0.08);
+            color: var(--primary);
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .technician-card .card-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 4px;
+        }
+
+        .technician-card .card-actions .btn-action {
+            padding: 8px 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-dark);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+            justify-content: center;
+            min-width: 70px;
+            text-decoration: none;
+        }
+
+        .technician-card .card-actions .btn-action:hover {
+            background: rgba(42, 111, 111, 0.06);
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .technician-card .card-actions .btn-action.chat {
+            background: var(--primary);
+            color: white;
+            border: none;
+        }
+
+        .technician-card .card-actions .btn-action.chat:hover {
+            background: var(--primary-light);
+            box-shadow: 0 8px 24px rgba(42, 111, 111, 0.2);
+        }
+
+        .technician-card .card-actions .btn-action.report {
+            color: var(--danger);
+            border-color: rgba(201, 74, 74, 0.2);
+        }
+
+        .technician-card .card-actions .btn-action.report:hover {
+            background: rgba(201, 74, 74, 0.06);
+            border-color: var(--danger);
+        }
+
+        /* ----- EMPTY STATE ----- */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+            grid-column: 1 / -1;
+        }
+
+        .empty-state i {
+            font-size: 60px;
+            color: var(--primary-light);
+            opacity: 0.3;
+            margin-bottom: 16px;
+        }
+
+        .empty-state h4 {
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+        }
+
+        /* ----- LOADING ----- */
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+            gap: 12px;
+            color: var(--text-muted);
+            grid-column: 1 / -1;
+        }
+
+        .loading-spinner i {
+            font-size: 28px;
+            color: var(--primary-light);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ----- MESSAGE AREA ----- */
+        .message-area {
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .message-area.show {
+            display: block;
+        }
+
+        .message-area.success {
+            background: rgba(42, 122, 90, 0.08);
+            color: var(--success);
+            border: 1px solid rgba(42, 122, 90, 0.2);
+        }
+
+        .message-area.error {
+            background: rgba(201, 74, 74, 0.08);
+            color: var(--danger);
+            border: 1px solid rgba(201, 74, 74, 0.2);
+        }
+
+        .message-area.info {
+            background: rgba(42, 111, 111, 0.08);
+            color: var(--primary);
+            border: 1px solid rgba(42, 111, 111, 0.2);
+        }
+
+        /* ----- MODAL ----- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            animation: fadeModal 0.25s ease;
+        }
+
+        @keyframes fadeModal {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 700px;
+            border-radius: 24px;
+            padding: 32px;
+            animation: slideUp 0.25s ease;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes slideUp {
+            0% { transform: translateY(20px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-content .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-content .modal-header h3 {
+            font-size: 20px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-content .modal-header .close-modal {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: 0.2s;
+            line-height: 1;
+        }
+
+        .modal-content .modal-header .close-modal:hover {
+            color: var(--danger);
+        }
+
+        .modal-content .modal-body {
+            color: var(--text-light);
+        }
+
+        /* Skill Filter Modal */
+        .skill-filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 10px;
+        }
+
+        .skill-filter-grid .skill-option {
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: #ffffff;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-dark);
+        }
+
+        .skill-filter-grid .skill-option:hover {
+            background: rgba(42, 111, 111, 0.06);
+            border-color: var(--primary);
+        }
+
+        .skill-filter-grid .skill-option.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Rating Stars */
+        .rating-stars {
+            display: flex;
+            gap: 8px;
+            font-size: 32px;
+            cursor: pointer;
+            justify-content: center;
+            margin: 16px 0;
+        }
+
+        .rating-stars .star {
+            color: #dce2e8;
+            transition: 0.2s;
+        }
+
+        .rating-stars .star.active {
+            color: #f39c12;
+        }
+
+        .rating-stars .star:hover {
+            transform: scale(1.2);
+        }
+
+        /* Report Form */
+        .report-form .form-group {
+            margin-bottom: 16px;
+        }
+
+        .report-form .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 6px;
+        }
+
+        .report-form .form-group label .required {
+            color: var(--danger);
+        }
+
+        .report-form .form-group input,
+        .report-form .form-group textarea,
+        .report-form .form-group select {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            font-size: 14px;
+            outline: none;
+            transition: 0.2s;
+            font-family: inherit;
+            color: var(--text-dark);
+            background: #ffffff;
+        }
+
+        .report-form .form-group input:focus,
+        .report-form .form-group textarea:focus,
+        .report-form .form-group select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(42, 111, 111, 0.1);
+        }
+
+        .report-form .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .report-form .form-group .helper-text {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .report-form .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+
+        .report-form .btn-submit:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(42, 111, 111, 0.2);
+        }
+
+        .report-form .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Details Modal */
+        .details-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            margin: 0 auto 12px;
+            overflow: hidden;
+        }
+
+        .details-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .details-skill-tag {
+            background: rgba(42, 111, 111, 0.08);
+            color: var(--primary);
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 500;
+            display: inline-block;
+            margin: 4px;
+        }
+
+        .details-portfolio-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+            text-decoration: none;
+            margin-top: 16px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .details-portfolio-btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(42, 111, 111, 0.2);
+        }
+
+        .details-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 16px;
+            border-top: 1px solid var(--border);
+            padding-top: 16px;
+        }
+
+        /* ----- PORTFOLIO MODAL ----- */
+        .portfolio-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 16px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .portfolio-gallery::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .portfolio-gallery::-webkit-scrollbar-track {
+            background: var(--bg);
+            border-radius: 10px;
+        }
+
+        .portfolio-gallery::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .portfolio-gallery::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-light);
+        }
+
+        .portfolio-item {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .portfolio-item:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(42, 111, 111, 0.2);
+        }
+
+        .portfolio-item .preview-container {
+            width: 100%;
+            height: 160px;
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .portfolio-item .preview-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .portfolio-item .preview-container img:hover {
+            transform: scale(1.05);
+        }
+
+        .portfolio-item .preview-container .file-icon {
+            font-size: 48px;
+            color: var(--text-muted);
+        }
+
+        .portfolio-item .preview-container .overlay-icon {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .portfolio-item .file-name {
+            padding: 10px 12px;
+            font-size: 12px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: center;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Portfolio Lightbox */
+        .lightbox-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 40px;
+            animation: fadeIn 0.3s ease;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(42, 111, 111, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(42, 111, 111, 0.03) 0%, transparent 50%);
+        }
+
+        .lightbox-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .lightbox-overlay .close-lightbox {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: var(--text-muted);
+            font-size: 40px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: none;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            z-index: 10;
+        }
+
+        .lightbox-overlay .close-lightbox:hover {
+            transform: rotate(90deg);
+            color: var(--danger);
+        }
+
+        .lightbox-overlay .lightbox-content {
+            max-width: 90%;
+            max-height: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .lightbox-overlay .lightbox-content img {
+            max-width: 100%;
+            max-height: 85vh;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .lightbox-overlay .lightbox-content .lightbox-counter {
+            color: var(--text-muted);
+            margin-top: 16px;
+            font-size: 14px;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+
+        .lightbox-overlay .nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 48px;
+            cursor: pointer;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            z-index: 10;
+            box-shadow: var(--shadow);
+        }
+
+        .lightbox-overlay .nav-arrow:hover {
+            color: var(--primary);
+            background: rgba(42, 111, 111, 0.08);
+            border-color: var(--primary);
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .lightbox-overlay .nav-arrow.prev {
+            left: 20px;
+        }
+
+        .lightbox-overlay .nav-arrow.next {
+            right: 20px;
+        }
+
+        .lightbox-overlay .nav-arrow.hidden {
+            display: none;
+        }
+
+        /* Rating Submit Button */
+        .rating-submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 8px;
+            box-shadow: 0 4px 15px rgba(42, 111, 111, 0.2);
+        }
+
+        .rating-submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(42, 111, 111, 0.35);
+        }
+
+        .rating-submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .rating-submit-btn i {
+            font-size: 18px;
+        }
+
+        /* ----- RESPONSIVE ----- */
+        @media (max-width: 1024px) {
+            .main-content {
+                padding: 20px;
+            }
+
+            .technicians-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 16px;
+            }
+
+            .search-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-section .search-input-wrapper {
+                min-width: unset;
+            }
+
+            .search-section .btn-filter {
+                justify-content: center;
+            }
+
+            .technicians-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                padding: 24px;
+            }
+
+            .skill-filter-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+
+            .portfolio-gallery {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                max-height: 400px;
+            }
+
+            .portfolio-item .preview-container {
+                height: 120px;
+            }
+
+            .lightbox-overlay .nav-arrow {
+                font-size: 32px;
+                width: 44px;
+                height: 44px;
+            }
+
+            .lightbox-overlay .nav-arrow.prev {
+                left: 10px;
+            }
+
+            .lightbox-overlay .nav-arrow.next {
+                right: 10px;
+            }
+
+            .lightbox-overlay .close-lightbox {
+                font-size: 30px;
+                top: 10px;
+                right: 15px;
+            }
+
+            .lightbox-overlay {
+                padding: 16px;
+            }
+
+            .lightbox-overlay .lightbox-content {
+                padding: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 12px;
+            }
+
+            .technician-card .card-actions .btn-action {
+                font-size: 12px;
+                padding: 6px 12px;
+                min-width: 60px;
+            }
+
+            .rating-stars {
+                font-size: 28px;
+                gap: 6px;
+            }
+
+            .portfolio-gallery {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                max-height: 300px;
+            }
+
+            .portfolio-item .preview-container {
+                height: 100px;
+            }
+
+            .lightbox-overlay .nav-arrow {
+                font-size: 20px;
+                width: 36px;
+                height: 36px;
+            }
+
+            .lightbox-overlay .nav-arrow.prev {
+                left: 5px;
+            }
+
+            .lightbox-overlay .nav-arrow.next {
+                right: 5px;
+            }
+
+            .lightbox-overlay .lightbox-content {
+                padding: 12px;
+            }
+
+            .lightbox-overlay .lightbox-content img {
+                max-height: 70vh;
+            }
+        }
+
+        /* ----- SCROLLBAR ----- */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-light);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+
+        <!-- Message Area -->
+        <div id="messageArea" class="message-area"></div>
+
+        <!-- Search Section -->
+        <div class="search-section">
+            <div class="search-input-wrapper">
+                <i class="fas fa-search"></i>
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="Search by technician name or skill..." 
+                />
+            </div>
+            <button class="btn-filter" id="filterBtn">
+                <i class="fas fa-filter"></i> Filter by Skills
+                <span class="badge-count" id="filterCount">0</span>
+            </button>
+            <button class="btn-filter clear" id="clearFilterBtn" style="display: none;">
+                <i class="fas fa-times"></i> Clear Filters
+            </button>
+        </div>
+
+        <!-- Technicians Grid -->
+        <div class="technicians-grid" id="techniciansGrid">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner"></i>
+                <span>Loading technicians...</span>
+            </div>
+        </div>
+    </main>
+
+    <!-- ===== SKILL FILTER MODAL ===== -->
+    <div class="modal-overlay" id="skillFilterModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-filter" style="color: var(--primary-light);"></i> Filter by Skills</h3>
+                <button class="close-modal" onclick="closeSkillFilter()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="color: var(--text-muted); margin-bottom: 16px;">Select a skill to filter technicians:</p>
+                <div class="skill-filter-grid" id="skillFilterGrid">
+                    <!-- Skills will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== DETAILS MODAL ===== -->
+    <div class="modal-overlay" id="detailsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-circle" style="color: var(--primary-light);"></i> <span id="detailsName">Technician Details</span></h3>
+                <button class="close-modal" onclick="closeDetails()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="detailsContent">
+                    <!-- Details will be populated here -->
+                </div>
+                <div class="details-actions">
+                    <button class="details-portfolio-btn" id="viewPortfolioBtn" data-client-id="">
+                        <i class="fas fa-briefcase"></i> View Portfolio
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== PORTFOLIO MODAL ===== -->
+    <div class="modal-overlay" id="portfolioModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-images" style="color: var(--primary-light);"></i> <span id="portfolioName">Portfolio</span></h3>
+                <button class="close-modal" onclick="closePortfolio()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="portfolioContainer">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner"></i>
+                        <span>Loading portfolio files...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== LIGHTBOX ===== -->
+    <div class="lightbox-overlay" id="lightbox">
+        <button class="close-lightbox" id="closeLightbox">&times;</button>
+        <button class="nav-arrow prev" id="prevLightbox"><i class="fas fa-chevron-left"></i></button>
+        <button class="nav-arrow next" id="nextLightbox"><i class="fas fa-chevron-right"></i></button>
+        <div class="lightbox-content">
+            <img id="lightboxImage" src="" alt="Portfolio image" />
+            <div class="lightbox-counter" id="lightboxCounter">1 of 1</div>
+        </div>
+    </div>
+
+    <!-- ===== REPORT MODAL (UPDATED WITH complained_to FIELD) ===== -->
+    <div class="modal-overlay" id="reportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-flag" style="color: var(--danger);"></i> Report Technician</h3>
+                <button class="close-modal" onclick="closeReport()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="reportForm" class="report-form">
+                    <!-- Hidden field for the technician being reported -->
+                    <input type="hidden" id="reportOtherUserId" value="" />
+                    
+                    <!-- Display the technician name being reported -->
+                    <div class="form-group" style="background: var(--bg); padding: 12px 16px; border-radius: 12px; margin-bottom: 16px;">
+                        <p style="font-size: 14px; color: var(--text-light);">
+                            <i class="fas fa-user" style="color: var(--primary-light);"></i> 
+                            Reporting: <strong id="reportTechnicianName">Technician</strong>
+                        </p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Complaint Type <span class="required">*</span></label>
+                        <select id="complaintType" required>
+                            <option value="">Select complaint type...</option>
+                            <option value="scam">Scam/Fraud</option>
+                            <option value="unprofessional">Unprofessional Behavior</option>
+                            <option value="poor_quality">Poor Quality Work</option>
+                            <option value="missed_deadline">Missed Deadline</option>
+                            <option value="harassment">Harassment</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Complaint Details <span class="required">*</span></label>
+                        <textarea id="complaintInfo" placeholder="Please provide details about your complaint..." required></textarea>
+                        <div class="helper-text">Provide as much detail as possible to help us investigate.</div>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="reportSubmitBtn">
+                        <i class="fas fa-paper-plane"></i> Submit Report
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== RATING MODAL ===== -->
+    <div class="modal-overlay" id="ratingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-star" style="color: #f39c12;"></i> Rate Technician</h3>
+                <button class="close-modal" onclick="closeRating()">&times;</button>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <p style="color: var(--text-muted); margin-bottom: 8px;">How would you rate <strong id="ratingName">this technician</strong>?</p>
+                <div class="rating-stars" id="ratingStars">
+                    <span class="star" data-value="1">★</span>
+                    <span class="star" data-value="2">★</span>
+                    <span class="star" data-value="3">★</span>
+                    <span class="star" data-value="4">★</span>
+                    <span class="star" data-value="5">★</span>
+                </div>
+                <input type="hidden" id="ratingUserId" value="" />
+                <button class="rating-submit-btn" id="ratingSubmitBtn">
+                    <i class="fas fa-check-circle"></i> Submit Rating
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+    (function() {
+        "use strict";
+
+        // ----- ENDPOINT FROM BACKEND -----
+        const ENDPOINT = "{{ ENDPOINT }}";
+
+        // ----- DOM REFERENCES -----
+        const techniciansGrid = document.getElementById('techniciansGrid');
+        const messageArea = document.getElementById('messageArea');
+        const searchInput = document.getElementById('searchInput');
+        const filterBtn = document.getElementById('filterBtn');
+        const clearFilterBtn = document.getElementById('clearFilterBtn');
+        const filterCount = document.getElementById('filterCount');
+
+        // Modal refs
+        const skillFilterModal = document.getElementById('skillFilterModal');
+        const skillFilterGrid = document.getElementById('skillFilterGrid');
+        const detailsModal = document.getElementById('detailsModal');
+        const detailsContent = document.getElementById('detailsContent');
+        const detailsName = document.getElementById('detailsName');
+        const viewPortfolioBtn = document.getElementById('viewPortfolioBtn');
+        const portfolioModal = document.getElementById('portfolioModal');
+        const portfolioContainer = document.getElementById('portfolioContainer');
+        const portfolioName = document.getElementById('portfolioName');
+        const reportModal = document.getElementById('reportModal');
+        const reportForm = document.getElementById('reportForm');
+        const reportSubmitBtn = document.getElementById('reportSubmitBtn');
+        const complaintType = document.getElementById('complaintType');
+        const complaintInfo = document.getElementById('complaintInfo');
+        const reportOtherUserId = document.getElementById('reportOtherUserId');
+        const reportTechnicianName = document.getElementById('reportTechnicianName');
+        const ratingModal = document.getElementById('ratingModal');
+        const ratingStars = document.getElementById('ratingStars');
+        const ratingSubmitBtn = document.getElementById('ratingSubmitBtn');
+        const ratingUserId = document.getElementById('ratingUserId');
+        const ratingName = document.getElementById('ratingName');
+
+        // Lightbox refs
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImage = document.getElementById('lightboxImage');
+        const lightboxCounter = document.getElementById('lightboxCounter');
+        const closeLightbox = document.getElementById('closeLightbox');
+        const prevLightbox = document.getElementById('prevLightbox');
+        const nextLightbox = document.getElementById('nextLightbox');
+
+        // ----- STATE -----
+        let allTechnicians = [];
+        let filteredTechnicians = [];
+        let selectedSkills = [];
+        let availableSkills = [];
+        let selectedRating = 0;
+        let currentClientId = null;
+        let portfolioImages = [];
+        let currentImageIndex = 0;
+
+        // ----- API ENDPOINTS -----
+        const API = {
+            getTechnicians: '/get_technicians/with_their_skills',
+            report: '/complaints_reporting',
+            rate: (userId, rating) => `/add/rating/${userId}/${rating}`,
+            getRatings: (userId) => `/get/ratings/${userId}`,
+            getPortfolio: (clientId) => `/client-potfolio/files/${clientId}`
+        };
+
+        // ----- CHAT URL (from Flask backend) -----
+        const CHAT_URL = "{{ url_for('private_chat_bp.get_receiver_id') }}";
+
+        // ----- UTILITY FUNCTIONS -----
+        function showMessage(message, type = 'info') {
+            messageArea.textContent = message;
+            messageArea.className = `message-area show ${type}`;
+            clearTimeout(window.messageTimeout);
+            window.messageTimeout = setTimeout(() => {
+                messageArea.classList.remove('show');
+            }, 5000);
+        }
+
+        function getInitials(name) {
+            if (!name) return 'U';
+            return name.split(' ')
+                .map(word => word[0])
+                .join('')
+                .toUpperCase()
+                .slice(0, 2);
+        }
+
+        function getSkillIcon(skill) {
+            const lowerSkill = skill.toLowerCase();
+            if (lowerSkill.includes('electrical')) return '⚡';
+            if (lowerSkill.includes('plumbing')) return '🔧';
+            if (lowerSkill.includes('masonry')) return '🧱';
+            if (lowerSkill.includes('carpentry')) return '🪚';
+            if (lowerSkill.includes('hvac')) return '❄️';
+            if (lowerSkill.includes('welding')) return '🔥';
+            if (lowerSkill.includes('painting')) return '🎨';
+            if (lowerSkill.includes('landscaping')) return '🌿';
+            if (lowerSkill.includes('roofing')) return '🏠';
+            if (lowerSkill.includes('contracting')) return '🏗️';
+            return '📌';
+        }
+
+        function getFileIcon(fileName) {
+            const ext = fileName.split('.').pop().toLowerCase();
+            const iconMap = {
+                'jpg': 'fa-image',
+                'jpeg': 'fa-image',
+                'png': 'fa-image',
+                'gif': 'fa-image',
+                'webp': 'fa-image',
+                'pdf': 'fa-file-pdf',
+                'doc': 'fa-file-word',
+                'docx': 'fa-file-word',
+            };
+            return iconMap[ext] || 'fa-file';
+        }
+
+        function isImage(fileName) {
+            const ext = fileName.split('.').pop().toLowerCase();
+            return ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp'].includes(ext);
+        }
+
+        function getFileUrl(fileName) {
+            if (!ENDPOINT) {
+                return '#';
+            }
+            // Ensure there's no double slash
+            const base = ENDPOINT.endsWith('/') ? ENDPOINT.slice(0, -1) : ENDPOINT;
+            const file = fileName.startsWith('/') ? fileName.slice(1) : fileName;
+            return `${base}/${file}`;
+        }
+
+        // ----- LIGHTBOX FUNCTIONS -----
+        function openLightbox(imageUrl, index, total) {
+            lightboxImage.src = imageUrl;
+            lightboxCounter.textContent = `${index + 1} of ${total}`;
+            currentImageIndex = index;
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            prevLightbox.classList.toggle('hidden', total <= 1);
+            nextLightbox.classList.toggle('hidden', total <= 1);
+        }
+
+        function closeLightboxFn() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function navigateLightbox(direction) {
+            const newIndex = (currentImageIndex + direction + portfolioImages.length) % portfolioImages.length;
+            const imageUrl = getFileUrl(portfolioImages[newIndex]);
+            lightboxImage.src = imageUrl;
+            lightboxCounter.textContent = `${newIndex + 1} of ${portfolioImages.length}`;
+            currentImageIndex = newIndex;
+        }
+
+        // Lightbox event listeners
+        closeLightbox.addEventListener('click', closeLightboxFn);
+        prevLightbox.addEventListener('click', function() { navigateLightbox(-1); });
+        nextLightbox.addEventListener('click', function() { navigateLightbox(1); });
+        lightbox.addEventListener('click', function(e) {
+            if (e.target === this) closeLightboxFn();
+        });
+        document.addEventListener('keydown', function(e) {
+            if (!lightbox.classList.contains('active')) return;
+            if (e.key === 'Escape') closeLightboxFn();
+            if (e.key === 'ArrowLeft') navigateLightbox(-1);
+            if (e.key === 'ArrowRight') navigateLightbox(1);
+        });
+
+        // ----- RENDER TECHNICIANS -----
+        function renderTechnicians(technicians) {
+            if (!technicians || technicians.length === 0) {
+                techniciansGrid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-users"></i>
+                        <h4>No technicians found</h4>
+                        <p>${searchInput.value ? 'Try adjusting your search or filters.' : 'No technicians are available at the moment.'}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            technicians.forEach((tech, index) => {
+                const userName = tech.user_name || `Technician ${index + 1}`;
+                const skillSet = tech.skill_set || [];
+                const userId = tech.user_id || index;
+                const avatarUrl = tech.avatar_url || '';
+                
+                html += `
+                    <div class="technician-card" data-user-id="${userId}">
+                        <div class="card-header">
+                            <div class="avatar">
+                                ${avatarUrl ? `<img src="${avatarUrl}" alt="${userName}" />` : getInitials(userName)}
+                            </div>
+                            <div class="info">
+                                <h4>${userName}</h4>
+                                <div class="sub-info">
+                                    <span><i class="fas fa-map-marker-alt" style="color: var(--text-muted);"></i> ${tech.location || 'Location not specified'}</span>
+                                    <span class="rating" data-user-id="${userId}">
+                                        <i class="fas fa-star"></i> <span class="rating-value">Loading...</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="skills-container">
+                            ${skillSet.map(s => `<span class="skill-tag">${getSkillIcon(s)} ${s}</span>`).join('')}
+                            ${skillSet.length === 0 ? '<span class="skill-tag" style="color: var(--text-muted);">No skills listed</span>' : ''}
+                        </div>
+                        <div class="card-actions">
+                            <a href="${CHAT_URL}?receiver_id=${userId}" class="btn-action chat" target="_self">
+                                <i class="fas fa-comment"></i> Chat
+                            </a>
+                            <button class="btn-action" onclick="handleDetails('${userId}')">
+                                <i class="fas fa-info-circle"></i> Details
+                            </button>
+                            <button class="btn-action" onclick="handleRate('${userId}', '${userName.replace(/'/g, "\\'")}')">
+                                <i class="fas fa-star"></i> Rate
+                            </button>
+                            <button class="btn-action report" onclick="handleReport('${userId}', '${userName.replace(/'/g, "\\'")}')">
+                                <i class="fas fa-flag"></i> Report
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            techniciansGrid.innerHTML = html;
+            updateFilterCount();
+
+            document.querySelectorAll('.rating').forEach(ratingEl => {
+                const userId = ratingEl.dataset.userId;
+                loadRating(userId, ratingEl);
+            });
+        }
+
+        // ----- LOAD RATING -----
+        async function loadRating(userId, ratingEl) {
+            try {
+                const response = await fetch(API.getRatings(userId), {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                    return;
+                }
+
+                const ratingValue = data.success ? data.ratings : 0;
+                const ratingSpan = ratingEl.querySelector('.rating-value');
+                if (ratingSpan) {
+                    ratingSpan.textContent = ratingValue > 0 ? ratingValue.toFixed(1) : 'N/A';
+                }
+            } catch (error) {
+                const ratingSpan = ratingEl.querySelector('.rating-value');
+                if (ratingSpan) {
+                    ratingSpan.textContent = 'N/A';
+                }
+            }
+        }
+
+        // ----- LOAD TECHNICIANS -----
+        async function loadTechnicians() {
+            try {
+                techniciansGrid.innerHTML = `
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner"></i>
+                        <span>Loading technicians...</span>
+                    </div>
+                `;
+
+                const response = await fetch(API.getTechnicians, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                    return;
+                }
+
+                if (data.success && data.technicians_skill_set) {
+                    allTechnicians = data.technicians_skill_set;
+                    filteredTechnicians = [...allTechnicians];
+                    
+                    const skillSet = new Set();
+                    allTechnicians.forEach(tech => {
+                        if (Array.isArray(tech.skill_set)) {
+                            tech.skill_set.forEach(s => skillSet.add(s));
+                        }
+                    });
+                    availableSkills = Array.from(skillSet).sort();
+                    populateSkillFilter(availableSkills);
+                    
+                    renderTechnicians(filteredTechnicians);
+                } else {
+                    allTechnicians = [];
+                    filteredTechnicians = [];
+                    renderTechnicians([]);
+                    if (data.message) {
+                        showMessage(data.message, 'info');
+                    }
+                }
+            } catch (error) {
+                showMessage('Failed to load technicians. Please try again.', 'error');
+                techniciansGrid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i>
+                        <h4>Error loading technicians</h4>
+                        <p>Please refresh the page or try again later.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // ----- POPULATE SKILL FILTER -----
+        function populateSkillFilter(skills) {
+            if (!skills || skills.length === 0) {
+                skillFilterGrid.innerHTML = '<p style="color: var(--text-muted); text-align: center; grid-column: 1 / -1;">No skills available</p>';
+                return;
+            }
+
+            let html = '';
+            skills.forEach(skill => {
+                const isActive = selectedSkills.includes(skill);
+                html += `
+                    <div class="skill-option ${isActive ? 'active' : ''}" data-skill="${skill}" onclick="toggleSkillFilter('${skill}')">
+                        ${getSkillIcon(skill)} ${skill}
+                    </div>
+                `;
+            });
+            skillFilterGrid.innerHTML = html;
+        }
+
+        // ----- TOGGLE SKILL FILTER -----
+        window.toggleSkillFilter = function(skill) {
+            const index = selectedSkills.indexOf(skill);
+            if (index > -1) {
+                selectedSkills.splice(index, 1);
+            } else {
+                selectedSkills.push(skill);
+            }
+            applyFilters();
+            populateSkillFilter(availableSkills);
+            updateFilterCount();
+        };
+
+        // ----- APPLY FILTERS -----
+        function applyFilters() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            
+            let filtered = [...allTechnicians];
+
+            if (selectedSkills.length > 0) {
+                filtered = filtered.filter(tech => {
+                    const techSkills = Array.isArray(tech.skill_set) ? tech.skill_set : [];
+                    return selectedSkills.some(skill => 
+                        techSkills.some(ts => ts.toLowerCase().includes(skill.toLowerCase()))
+                    );
+                });
+            }
+
+            if (searchTerm) {
+                filtered = filtered.filter(tech => {
+                    const userName = (tech.user_name || '').toLowerCase();
+                    const techSkills = Array.isArray(tech.skill_set) ? tech.skill_set : [];
+                    const skillsMatch = techSkills.some(s => s.toLowerCase().includes(searchTerm));
+                    return userName.includes(searchTerm) || skillsMatch;
+                });
+            }
+
+            filteredTechnicians = filtered;
+            renderTechnicians(filteredTechnicians);
+        }
+
+        // ----- UPDATE FILTER COUNT -----
+        function updateFilterCount() {
+            const count = selectedSkills.length;
+            filterCount.textContent = count;
+            filterCount.style.display = count > 0 ? 'inline' : 'none';
+            clearFilterBtn.style.display = (count > 0 || searchInput.value.trim()) ? 'inline-flex' : 'none';
+        }
+
+        // ----- SEARCH INPUT -----
+        searchInput.addEventListener('input', function() {
+            applyFilters();
+            updateFilterCount();
+        });
+
+        // ----- CLEAR FILTERS -----
+        clearFilterBtn.addEventListener('click', function() {
+            selectedSkills = [];
+            searchInput.value = '';
+            applyFilters();
+            populateSkillFilter(availableSkills);
+            updateFilterCount();
+            closeSkillFilter();
+        });
+
+        // ----- FILTER BUTTON -----
+        filterBtn.addEventListener('click', function() {
+            skillFilterModal.classList.add('active');
+        });
+
+        window.closeSkillFilter = function() {
+            skillFilterModal.classList.remove('active');
+        };
+
+        skillFilterModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeSkillFilter();
+            }
+        });
+
+        // ----- DETAILS -----
+        window.handleDetails = function(userId) {
+            const tech = allTechnicians.find(t => t.user_id == userId) || 
+                        filteredTechnicians.find(t => t.user_id == userId);
+            
+            if (!tech) {
+                showMessage('Technician not found', 'error');
+                return;
+            }
+
+            currentClientId = userId;
+            detailsName.textContent = tech.user_name || 'Technician';
+            
+            const skills = Array.isArray(tech.skill_set) ? tech.skill_set : [];
+            const skillsHtml = skills.map(s => `<span class="details-skill-tag">${getSkillIcon(s)} ${s}</span>`).join(' ');
+
+            const avatarHtml = tech.avatar_url ? 
+                `<img src="${tech.avatar_url}" alt="${tech.user_name}" />` : 
+                getInitials(tech.user_name || 'U');
+
+            detailsContent.innerHTML = `
+                <div style="text-align: center; margin-bottom: 16px;">
+                    <div class="details-avatar">
+                        ${avatarHtml}
+                    </div>
+                    <h4 style="margin-top: 12px; color: var(--text-dark);">${tech.user_name || 'Technician'}</h4>
+                    <p style="color: var(--text-muted); font-size: 14px;">${tech.email || 'Email not provided'}</p>
+                    <p style="color: var(--text-muted); font-size: 14px;">${tech.phone_number || 'Phone not provided'}</p>
+                    <p style="color: var(--text-muted); font-size: 14px; margin-top: 4px;">
+                        <i class="fas fa-star" style="color: #f39c12;"></i> <span id="detailsRating">Loading...</span>
+                    </p>
+                </div>
+                <div style="border-top: 1px solid var(--border); padding-top: 16px;">
+                    <h5 style="color: var(--text-dark); margin-bottom: 8px;">Skills</h5>
+                    <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                        ${skillsHtml || '<span style="color: var(--text-muted);">No skills listed</span>'}
+                    </div>
+                </div>
+            `;
+
+            viewPortfolioBtn.dataset.clientId = userId;
+            detailsModal.classList.add('active');
+            loadDetailsRating(userId);
+        };
+
+        // ----- LOAD DETAILS RATING -----
+        async function loadDetailsRating(userId) {
+            try {
+                const response = await fetch(API.getRatings(userId), {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                    return;
+                }
+
+                const ratingValue = data.success ? data.ratings : 0;
+                const ratingSpan = document.getElementById('detailsRating');
+                if (ratingSpan) {
+                    ratingSpan.textContent = ratingValue > 0 ? ratingValue.toFixed(1) : 'No ratings yet';
+                }
+            } catch (error) {
+                const ratingSpan = document.getElementById('detailsRating');
+                if (ratingSpan) {
+                    ratingSpan.textContent = 'N/A';
+                }
+            }
+        }
+
+        window.closeDetails = function() {
+            detailsModal.classList.remove('active');
+        };
+
+        detailsModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDetails();
+            }
+        });
+
+        // ----- VIEW PORTFOLIO -----
+        viewPortfolioBtn.addEventListener('click', function() {
+            const clientId = this.dataset.clientId;
+            if (clientId) {
+                loadPortfolio(clientId);
+            } else {
+                showMessage('No client selected', 'error');
+            }
+        });
+
+        async function loadPortfolio(clientId) {
+            portfolioModal.classList.add('active');
+            portfolioContainer.innerHTML = `
+                <div class="loading-spinner">
+                    <i class="fas fa-spinner"></i>
+                    <span>Loading portfolio...</span>
+                </div>
+            `;
+
+            try {
+                const response = await fetch(API.getPortfolio(clientId), {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                    return;
+                }
+
+                if (data.success && data.files) {
+                    const files = data.files;
+                    portfolioImages = files.map(f => f.file_name || f);
+                    
+                    if (files.length === 0) {
+                        portfolioContainer.innerHTML = `
+                            <div class="empty-state" style="padding: 40px 20px;">
+                                <i class="fas fa-images"></i>
+                                <h4>No portfolio files</h4>
+                                <p>This technician hasn't uploaded any portfolio files yet.</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    let html = '<div class="portfolio-gallery">';
+                    files.forEach((file, index) => {
+                        const fileName = file.file_name || file;
+                        const isImageFile = isImage(fileName);
+                        const fileUrl = getFileUrl(fileName);
+                        
+                        html += `
+                            <div class="portfolio-item" data-index="${index}">
+                                <div class="preview-container" onclick="openLightboxFromGallery(${index})">
+                                    ${isImageFile ? 
+                                        `<img src="${fileUrl}" alt="photo" loading="lazy" onerror="this.parentElement.innerHTML='<i class=\\'fas ${getFileIcon(fileName)} file-icon\\'></i>'" />` :
+                                        `<i class="fas ${getFileIcon(fileName)} file-icon"></i>`
+                                    }
+                                    <span class="overlay-icon">
+                                        <i class="fas ${isImageFile ? 'fa-eye' : 'fa-file'}"></i>
+                                        ${isImageFile ? 'Preview' : 'File'}
+                                    </span>
+                                </div>
+                                <div class="file-name" title="${fileName}">${fileName}</div>
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+                    portfolioContainer.innerHTML = html;
+                } else {
+                    portfolioContainer.innerHTML = `
+                        <div class="empty-state" style="padding: 40px 20px;">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <h4>No portfolio found</h4>
+                            <p>${data.message || 'No portfolio files available.'}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                portfolioContainer.innerHTML = `
+                    <div class="empty-state" style="padding: 40px 20px;">
+                        <i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i>
+                        <h4>Error loading portfolio</h4>
+                        <p>Please try again later.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // ----- OPEN LIGHTBOX FROM GALLERY -----
+        window.openLightboxFromGallery = function(index) {
+            const file = portfolioImages[index];
+            if (file && isImage(file)) {
+                const fileUrl = getFileUrl(file);
+                openLightbox(fileUrl, index, portfolioImages.length);
+            } else {
+                showMessage('This file cannot be previewed', 'info');
+            }
+        };
+
+        window.closePortfolio = function() {
+            portfolioModal.classList.remove('active');
+        };
+
+        portfolioModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePortfolio();
+            }
+        });
+
+        // ----- REPORT (UPDATED WITH complained_to FIELD) -----
+        window.handleReport = function(userId, userName) {
+            reportOtherUserId.value = userId;
+            reportTechnicianName.textContent = userName || 'Technician';
+            complaintType.value = '';
+            complaintInfo.value = '';
+            reportModal.classList.add('active');
+        };
+
+        window.closeReport = function() {
+            reportModal.classList.remove('active');
+        };
+
+        reportModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeReport();
+            }
+        });
+
+        // ----- REPORT FORM SUBMIT (UPDATED) -----
+        reportForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const type = complaintType.value;
+            const info = complaintInfo.value.trim();
+            const otherUserId = reportOtherUserId.value;
+
+            if (!type) {
+                showMessage('Please select a complaint type.', 'error');
+                return;
+            }
+
+            if (!info) {
+                showMessage('Please provide complaint details.', 'error');
+                return;
+            }
+
+            if (!otherUserId) {
+                showMessage('No technician selected to report.', 'error');
+                return;
+            }
+
+            reportSubmitBtn.disabled = true;
+            reportSubmitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+
+            try {
+                const formData = new FormData();
+                formData.append('complaint_type', type);
+                formData.append('complaint_info', info);
+                formData.append('other_user_id', otherUserId);
+
+                const response = await fetch(API.report, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                    return;
+                }
+
+                if (data.success) {
+                    showMessage(data.msg || 'Report submitted successfully!', 'success');
+                    closeReport();
+                } else {
+                    showMessage(data.msg || 'Failed to submit report.', 'error');
+                }
+            } catch (error) {
+                showMessage('An error occurred. Please try again.', 'error');
+            } finally {
+                reportSubmitBtn.disabled = false;
+                reportSubmitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Report';
+            }
+        });
+
+        // ----- RATING -----
+        window.handleRate = function(userId, userName) {
+            ratingUserId.value = userId;
+            ratingName.textContent = userName || 'this technician';
+            selectedRating = 0;
+            
+            document.querySelectorAll('#ratingStars .star').forEach(star => {
+                star.classList.remove('active');
+            });
+            
+            ratingModal.classList.add('active');
+        };
+
+        window.closeRating = function() {
+            ratingModal.classList.remove('active');
+        };
+
+        ratingModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeRating();
+            }
+        });
+
+        document.querySelectorAll('#ratingStars .star').forEach(star => {
+            star.addEventListener('click', function() {
+                const value = parseInt(this.dataset.value);
+                selectedRating = value;
+                
+                document.querySelectorAll('#ratingStars .star').forEach(s => {
+                    s.classList.toggle('active', parseInt(s.dataset.value) <= value);
+                });
+            });
+
+            star.addEventListener('mouseenter', function() {
+                const value = parseInt(this.dataset.value);
+                document.querySelectorAll('#ratingStars .star').forEach(s => {
+                    s.style.color = parseInt(s.dataset.value) <= value ? '#f39c12' : '#dce2e8';
+                });
+            });
+
+            star.addEventListener('mouseleave', function() {
+                document.querySelectorAll('#ratingStars .star').forEach(s => {
+                    s.style.color = s.classList.contains('active') ? '#f39c12' : '#dce2e8';
+                });
+            });
+        });
+
+        ratingSubmitBtn.addEventListener('click', async function() {
+            if (selectedRating === 0) {
+                showMessage('Please select a rating.', 'error');
+                return;
+            }
+
+            const userId = ratingUserId.value;
+            if (!userId) {
+                showMessage('User ID not found.', 'error');
+                return;
+            }
+
+            this.disabled = true;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+
+            try {
+                const response = await fetch(API.rate(userId, selectedRating), {
+                    method: 'GET',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                    return;
+                }
+
+                if (data.success) {
+                    showMessage(data.msg || 'Rating submitted successfully!', 'success');
+                    closeRating();
+                    const ratingEl = document.querySelector(`.rating[data-user-id="${userId}"]`);
+                    if (ratingEl) {
+                        loadRating(userId, ratingEl);
+                    }
+                } else {
+                    showMessage(data.msg || 'Failed to submit rating.', 'error');
+                }
+            } catch (error) {
+                showMessage('An error occurred. Please try again.', 'error');
+            } finally {
+                this.disabled = false;
+                this.innerHTML = '<i class="fas fa-check-circle"></i> Submit Rating';
+            }
+        });
+
+        // ----- INIT -----
+        loadTechnicians();
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeSkillFilter();
+                closeDetails();
+                closePortfolio();
+                closeLightboxFn();
+                closeReport();
+                closeRating();
+            }
+        });
+
+    })();
+</script>
+
+</body>
+</html>

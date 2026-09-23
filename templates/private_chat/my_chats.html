@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <title>CraftLink · Chat History</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* ----- ROOT VARIABLES (matching dashboard) ----- */
+        :root {
+            --primary: #2a6f6f;
+            --primary-light: #3d8f8f;
+            --primary-dark: #1d4f4f;
+            --gradient: linear-gradient(145deg, #1d4f4f, #3d9e9e);
+            --bg: #eef2f7;
+            --card-bg: rgba(255, 255, 255, 0.65);
+            --glass-bg: rgba(255, 255, 255, 0.5);
+            --border: rgba(45, 75, 75, 0.12);
+            --text-dark: #1e2b2b;
+            --text-light: #3f5555;
+            --text-muted: #6b8a8a;
+            --danger: #c94a4a;
+            --success: #2a7a5a;
+            --radius: 20px;
+            --shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+            --glow: 0 0 30px rgba(42, 111, 111, 0.08);
+            --whatsapp-green: #25D366;
+            --whatsapp-light-green: #dcf8c6;
+        }
+
+        /* ----- RESET & BASE ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            color: var(--text-dark);
+            padding: 20px;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(42, 111, 111, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(42, 111, 111, 0.03) 0%, transparent 50%);
+        }
+
+        /* ----- MAIN CONTENT ----- */
+        .main-content {
+            width: 100%;
+            max-width: 900px;
+            padding: 30px 40px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.25s;
+            margin-bottom: 20px;
+        }
+
+        .back-link:hover {
+            color: var(--primary);
+            transform: translateX(-4px);
+        }
+
+        /* ----- CHAT HISTORY LIST (WhatsApp Style) ----- */
+        .chat-history-container {
+            flex: 1;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            min-height: 400px;
+        }
+
+        .chat-history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .chat-history-header h3 {
+            font-size: 16px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-history-header .chat-count {
+            background: rgba(42, 111, 111, 0.1);
+            color: var(--primary);
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .chat-list {
+            padding: 4px 0;
+        }
+
+        /* ----- WHATSAPP STYLE CHAT ITEM ----- */
+        .chat-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: var(--text-dark);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            background: transparent;
+        }
+
+        .chat-item:hover {
+            background: rgba(42, 111, 111, 0.04);
+        }
+
+        .chat-item:active {
+            background: rgba(42, 111, 111, 0.08);
+        }
+
+        .chat-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Avatar */
+        .chat-item .avatar-wrapper {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .chat-item .avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .chat-item .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .chat-item .avatar .default-avatar {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+        }
+
+        /* Online/Offline Status Dot */
+        .chat-item .avatar-wrapper .status-indicator {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 2px solid var(--bg);
+            background: var(--text-muted);
+        }
+
+        .chat-item .avatar-wrapper .status-indicator.online {
+            background: var(--whatsapp-green);
+        }
+
+        .chat-item .avatar-wrapper .status-indicator.offline {
+            background: var(--text-muted);
+        }
+
+        /* Chat Info */
+        .chat-item .chat-info {
+            flex: 1;
+            min-width: 0;
+            padding: 2px 0;
+        }
+
+        .chat-item .chat-info .chat-name {
+            font-weight: 600;
+            font-size: 16px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 2px;
+        }
+
+        .chat-item .chat-info .chat-name .unread-badge {
+            background: var(--whatsapp-green);
+            color: white;
+            font-size: 11px;
+            padding: 1px 10px;
+            border-radius: 30px;
+            font-weight: 600;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .chat-item .chat-info .chat-preview {
+            font-size: 14px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 300px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .chat-item .chat-info .chat-preview .preview-icon {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .chat-item .chat-info .chat-preview .unread-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--whatsapp-green);
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        /* Chat Meta (Time) */
+        .chat-item .chat-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+            flex-shrink: 0;
+            margin-left: 8px;
+        }
+
+        .chat-item .chat-meta .chat-time {
+            font-size: 12px;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .chat-item .chat-meta .chat-time.unread {
+            color: var(--whatsapp-green);
+            font-weight: 600;
+        }
+
+        /* Hover effect - soft box like WhatsApp */
+        .chat-item:hover {
+            background: rgba(42, 111, 111, 0.04);
+            border-radius: 0;
+        }
+
+        /* ----- EMPTY STATE ----- */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 60px;
+            color: var(--primary-light);
+            opacity: 0.3;
+            margin-bottom: 16px;
+        }
+
+        .empty-state h4 {
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        /* ----- LOADING ----- */
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+            gap: 12px;
+            color: var(--text-muted);
+        }
+
+        .loading-spinner i {
+            font-size: 28px;
+            color: var(--primary-light);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ----- MESSAGE AREA ----- */
+        .message-area {
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .message-area.show {
+            display: block;
+        }
+
+        .message-area.success {
+            background: rgba(42, 122, 90, 0.08);
+            color: var(--success);
+            border: 1px solid rgba(42, 122, 90, 0.2);
+        }
+
+        .message-area.error {
+            background: rgba(201, 74, 74, 0.08);
+            color: var(--danger);
+            border: 1px solid rgba(201, 74, 74, 0.2);
+        }
+
+        .message-area.info {
+            background: rgba(42, 111, 111, 0.08);
+            color: var(--primary);
+            border: 1px solid rgba(42, 111, 111, 0.2);
+        }
+
+        /* ----- RESPONSIVE ----- */
+        @media (max-width: 1024px) {
+            .main-content {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 16px;
+            }
+
+
+            .chat-item {
+                padding: 12px 16px;
+            }
+
+            .chat-item .avatar {
+                width: 44px;
+                height: 44px;
+                font-size: 16px;
+            }
+
+            .chat-item .chat-info .chat-preview {
+                max-width: 180px;
+            }
+
+            .chat-item .chat-meta {
+                margin-left: 4px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 12px;
+            }
+
+            .chat-item {
+                padding: 10px 12px;
+                gap: 12px;
+            }
+
+            .chat-item .avatar {
+                width: 40px;
+                height: 40px;
+                font-size: 14px;
+            }
+
+            .chat-item .chat-info .chat-preview {
+                max-width: 120px;
+                font-size: 13px;
+            }
+
+            .chat-item .chat-info .chat-name {
+                font-size: 14px;
+            }
+
+            .chat-item .avatar-wrapper .status-indicator {
+                width: 12px;
+                height: 12px;
+            }
+        }
+
+        /* ----- SCROLLBAR ----- */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-light);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+
+        <!-- Message Area -->
+        <div id="messageArea" class="message-area"></div>
+
+        <!-- Chat History Container -->
+        <div class="chat-history-container">
+            <div class="chat-history-header">
+                <h3>
+                    <i class="fas fa-comment-dots" style="color: var(--whatsapp-green);"></i>
+                    Conversations
+                </h3>
+                <span class="chat-count" id="chatCount">0 chats</span>
+            </div>
+
+            <div class="chat-list" id="chatList">
+                <div class="loading-spinner">
+                    <i class="fas fa-spinner"></i>
+                    <span>Loading chats...</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        (function() {
+            "use strict";
+
+            // ----- DOM REFERENCES -----
+            const chatList = document.getElementById('chatList');
+            const chatCount = document.getElementById('chatCount');
+            const messageArea = document.getElementById('messageArea');
+
+            // ----- API ENDPOINTS -----
+            const API = {
+                getChatHistory: '/private_chats/my-chats/history',
+                getReceiver: '/private_chats/get_receiver_id'
+            };
+
+            // ----- DEFAULT AVATAR COLORS -----
+            const avatarColors = [
+                '#2a6f6f', '#3d8f8f', '#1d4f4f', '#4a9e9e', '#5ababa',
+                '#c94a4a', '#2a7a5a', '#f39c12', '#6b8a8a', '#8a6b6b'
+            ];
+
+            // ----- UTILITY FUNCTIONS -----
+            function showMessage(message, type = 'info') {
+                messageArea.textContent = message;
+                messageArea.className = `message-area show ${type}`;
+                clearTimeout(window.messageTimeout);
+                window.messageTimeout = setTimeout(() => {
+                    messageArea.classList.remove('show');
+                }, 5000);
+            }
+
+            function getInitials(name) {
+                if (!name) return '?';
+                const parts = name.trim().split(' ');
+                if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+                return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+            }
+
+            function getAvatarColor(name) {
+                if (!name) return avatarColors[0];
+                let hash = 0;
+                for (let i = 0; i < name.length; i++) {
+                    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+                }
+                return avatarColors[Math.abs(hash) % avatarColors.length];
+            }
+
+            function formatTime(dateString) {
+                try {
+                    const date = new Date(dateString);
+                    if (isNaN(date.getTime())) return 'Recently';
+                    
+                    const now = new Date();
+                    const diff = now - date;
+                    
+                    // Less than 24 hours
+                    if (diff < 24 * 60 * 60 * 1000) {
+                        let hours = date.getHours();
+                        const minutes = date.getMinutes();
+                        const ampm = hours >= 12 ? 'PM' : 'AM';
+                        hours = hours % 12 || 12;
+                        return `${hours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+                    }
+                    
+                    // Less than 7 days
+                    if (diff < 7 * 24 * 60 * 60 * 1000) {
+                        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                        return days[date.getDay()];
+                    }
+                    
+                    // Older
+                    return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+                } catch (e) {
+                    return 'Recently';
+                }
+            }
+
+            // ----- GET UNIQUE CHAT PARTNERS -----
+            function getUniqueChatPartners(chats) {
+                const uniquePartners = new Map();
+                
+                chats.forEach(chat => {
+                    const id = chat.receiver_id;
+                    if (!uniquePartners.has(id)) {
+                        uniquePartners.set(id, {
+                            receiver_id: id,
+                            user_name: chat.user_name || 'Unknown User',
+                            is_seen: chat.is_seen,
+                            avatar_url: chat.avatatar_url || chat.avatar_url || '',
+                            last_message_time: chat.date_time || new Date().toISOString()
+                        });
+                    }
+                });
+                
+                return Array.from(uniquePartners.values());
+            }
+
+            // ----- RENDER CHAT HISTORY (WhatsApp Style) -----
+            function renderChatHistory(chats) {
+                if (!chats || chats.length === 0) {
+                    chatList.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-comments"></i>
+                            <h4>No conversations yet</h4>
+                            <p>Start a chat with a technician or client to see your conversation history here.</p>
+                        </div>
+                    `;
+                    chatCount.textContent = '0 chats';
+                    return;
+                }
+
+                // Get unique chat partners
+                const uniquePartners = getUniqueChatPartners(chats);
+                const sortedPartners = uniquePartners.sort((a, b) => {
+                    return new Date(b.last_message_time) - new Date(a.last_message_time);
+                });
+
+                chatCount.textContent = `${sortedPartners.length} chat${sortedPartners.length > 1 ? 's' : ''}`;
+
+                let html = '';
+                sortedPartners.forEach((partner) => {
+                    const initials = getInitials(partner.user_name);
+                    const avatarColor = getAvatarColor(partner.user_name);
+                    const isUnread = !partner.is_seen;
+                    const chatUrl = API.getReceiver + `?receiver_id=${partner.receiver_id}`;
+                    const timeDisplay = formatTime(partner.last_message_time);
+                    const hasAvatar = partner.avatar_url && partner.avatar_url.trim() !== '';
+                    
+                    html += `
+                        <a href="${chatUrl}" class="chat-item" target="_self">
+                            <div class="avatar-wrapper">
+                                <div class="avatar" style="background: ${avatarColor};">
+                                    ${hasAvatar ? 
+                                        `<img src="${partner.avatar_url}" alt="${partner.user_name}" />` : 
+                                        `<span class="default-avatar">${initials}</span>`
+                                    }
+                                </div>
+                                <span class="status-indicator ${isUnread ? 'online' : 'offline'}"></span>
+                            </div>
+                            <div class="chat-info">
+                                <div class="chat-name">
+                                    ${partner.user_name}
+                                    ${isUnread ? '<span class="unread-badge">New</span>' : ''}
+                                </div>
+                                <div class="chat-preview">
+                                    ${isUnread ? 
+                                        `<span class="unread-indicator"></span> Unread messages` : 
+                                        'Click to view conversation'
+                                    }
+                                </div>
+                            </div>
+                            <div class="chat-meta">
+                                <span class="chat-time ${isUnread ? 'unread' : ''}">${timeDisplay}</span>
+                            </div>
+                        </a>
+                    `;
+                });
+
+                chatList.innerHTML = html;
+            }
+
+            // ----- LOAD CHAT HISTORY -----
+            async function loadChatHistory() {
+                try {
+                    chatList.innerHTML = `
+                        <div class="loading-spinner">
+                            <i class="fas fa-spinner"></i>
+                            <span>Loading chats...</span>
+                        </div>
+                    `;
+
+                    const response = await fetch(API.getChatHistory, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                        return;
+                    }
+
+                    if (data.success && data.chats) {
+                        renderChatHistory(data.chats);
+                    } else {
+                        renderChatHistory([]);
+                        if (data.message) {
+                            showMessage(data.message, 'info');
+                        }
+                    }
+                } catch (error) {
+                    showMessage('Failed to load chat history. Please try again.', 'error');
+                    chatList.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i>
+                            <h4>Error loading chats</h4>
+                            <p>Please refresh the page or try again later.</p>
+                        </div>
+                    `;
+                }
+            }
+
+            // ----- INIT -----
+            loadChatHistory();
+
+        })();
+    </script>
+
+</body>
+</html>

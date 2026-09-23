@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <title>CraftLink · Admin Payments</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* ----- ROOT VARIABLES (matching dashboard) ----- */
+        :root {
+            --primary: #2a6f6f;
+            --primary-light: #3d8f8f;
+            --primary-dark: #1d4f4f;
+            --gradient: linear-gradient(145deg, #1d4f4f, #3d9e9e);
+            --bg: #eef2f7;
+            --card-bg: rgba(255, 255, 255, 0.65);
+            --glass-bg: rgba(255, 255, 255, 0.5);
+            --border: rgba(45, 75, 75, 0.12);
+            --text-dark: #1e2b2b;
+            --text-light: #3f5555;
+            --text-muted: #6b8a8a;
+            --danger: #c94a4a;
+            --success: #2a7a5a;
+            --warning: #f39c12;
+            --radius: 20px;
+            --shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+            --glow: 0 0 30px rgba(42, 111, 111, 0.08);
+        }
+
+        /* ----- RESET & BASE ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            color: var(--text-dark);
+            padding: 20px;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(42, 111, 111, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(42, 111, 111, 0.03) 0%, transparent 50%);
+        }
+
+        /* ----- MAIN CONTENT ----- */
+        .main-content {
+            width: 100%;
+            max-width: 1200px;
+            padding: 30px 40px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ----- TOP HEADER ----- */
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .top-header .page-title h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .top-header .page-title h2 i {
+            color: var(--primary-light);
+        }
+
+        .top-header .page-title p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .top-header .header-actions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .top-header .header-actions .icon-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.5);
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-size: 18px;
+            backdrop-filter: blur(4px);
+        }
+
+        .top-header .header-actions .icon-btn:hover {
+            background: rgba(42, 111, 111, 0.1);
+            color: var(--primary);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        /* ----- STATS OVERVIEW ----- */
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+            border-color: rgba(42, 111, 111, 0.2);
+        }
+
+        .stat-box .stat-label {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .stat-box .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .stat-box .stat-value .currency {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        /* ----- TAB NAVIGATION ----- */
+        .tab-navigation {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 10px 24px;
+            border-radius: 12px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover {
+            background: rgba(42, 111, 111, 0.04);
+            color: var(--text-dark);
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(42, 111, 111, 0.2);
+        }
+
+        .tab-btn .tab-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 10px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .tab-btn.active .tab-badge {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .tab-btn:not(.active) .tab-badge {
+            background: rgba(42, 111, 111, 0.08);
+            color: var(--primary);
+        }
+
+        /* ----- PAYMENTS TABLE ----- */
+        .payments-container {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            flex: 1;
+        }
+
+        .payments-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .payments-header h3 {
+            font-size: 16px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .payments-header .payment-count {
+            background: rgba(42, 111, 111, 0.08);
+            color: var(--primary);
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .payments-table-wrapper {
+            overflow-x: auto;
+        }
+
+        .payments-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .payments-table th {
+            text-align: left;
+            padding: 12px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .payments-table td {
+            padding: 14px 16px;
+            font-size: 14px;
+            color: var(--text-dark);
+            border-bottom: 1px solid rgba(45, 75, 75, 0.05);
+        }
+
+        .payments-table tr:hover td {
+            background: rgba(42, 111, 111, 0.02);
+        }
+
+        .payments-table .amount-cell {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .payments-table .amount-cell.positive {
+            color: var(--success);
+        }
+
+        .payments-table .amount-cell.negative {
+            color: var(--danger);
+        }
+
+        .payments-table .status-badge {
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .payments-table .status-badge.completed {
+            background: rgba(42, 122, 90, 0.1);
+            color: var(--success);
+        }
+
+        .payments-table .status-badge.pending {
+            background: rgba(243, 156, 18, 0.1);
+            color: var(--warning);
+        }
+
+        .payments-table .status-badge.failed {
+            background: rgba(201, 74, 74, 0.1);
+            color: var(--danger);
+        }
+
+        .payments-table .status-badge.received {
+            background: rgba(42, 111, 111, 0.1);
+            color: var(--primary);
+        }
+
+        /* ----- EMPTY STATE ----- */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 60px;
+            color: var(--primary-light);
+            opacity: 0.3;
+            margin-bottom: 16px;
+        }
+
+        .empty-state h4 {
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+        }
+
+        /* ----- LOADING ----- */
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            gap: 12px;
+            color: var(--text-muted);
+        }
+
+        .loading-spinner i {
+            font-size: 24px;
+            color: var(--primary-light);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ----- MESSAGE AREA ----- */
+        .message-area {
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .message-area.show {
+            display: block;
+        }
+
+        .message-area.success {
+            background: rgba(42, 122, 90, 0.08);
+            color: var(--success);
+            border: 1px solid rgba(42, 122, 90, 0.2);
+        }
+
+        .message-area.error {
+            background: rgba(201, 74, 74, 0.08);
+            color: var(--danger);
+            border: 1px solid rgba(201, 74, 74, 0.2);
+        }
+
+        .message-area.info {
+            background: rgba(42, 111, 111, 0.08);
+            color: var(--primary);
+            border: 1px solid rgba(42, 111, 111, 0.2);
+        }
+
+        /* ----- RESPONSIVE ----- */
+        @media (max-width: 1024px) {
+            .main-content {
+                padding: 20px;
+            }
+
+            .top-header .page-title h2 {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 16px;
+            }
+
+            .top-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .top-header .header-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .stats-overview {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+
+            .stat-box .stat-value {
+                font-size: 22px;
+            }
+
+            .tab-navigation {
+                gap: 4px;
+            }
+
+            .tab-btn {
+                padding: 8px 16px;
+                font-size: 13px;
+            }
+
+            .payments-table {
+                font-size: 13px;
+            }
+
+            .payments-table th,
+            .payments-table td {
+                padding: 8px 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 12px;
+            }
+
+            .top-header .page-title h2 {
+                font-size: 20px;
+            }
+
+            .stats-overview {
+                grid-template-columns: 1fr;
+            }
+
+            .payments-table {
+                font-size: 12px;
+            }
+
+            .payments-table th,
+            .payments-table td {
+                padding: 6px 8px;
+                white-space: nowrap;
+            }
+
+            .tab-btn {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+        }
+
+        /* ----- SCROLLBAR ----- */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-light);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+
+        <!-- Message Area -->
+        <div id="messageArea" class="message-area"></div>
+
+        <!-- Stats Overview -->
+        <div class="stats-overview" id="statsOverview">
+            <div class="stat-box">
+                <div class="stat-label">Total Payments Made</div>
+                <div class="stat-value"><span class="currency">KSH</span><span id="totalMade">0.00</span></div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Total Payments Received</div>
+                <div class="stat-value"><span class="currency">KSH</span><span id="totalReceived">0.00</span></div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Total Transactions</div>
+                <div class="stat-value" id="totalTransactions">0</div>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-btn active" data-tab="made" onclick="switchTab('made')">
+                <i class="fas fa-arrow-up"></i> Payments Made
+                <span class="tab-badge" id="madeCount">0</span>
+            </button>
+            <button class="tab-btn" data-tab="received" onclick="switchTab('received')">
+                <i class="fas fa-arrow-down"></i> Payments Received
+                <span class="tab-badge" id="receivedCount">0</span>
+            </button>
+        </div>
+
+        <!-- Payments Container -->
+        <div class="payments-container">
+            <div class="payments-header">
+                <h3><i class="fas fa-list" style="color: var(--primary-light);"></i> <span id="paymentTitle">Payments Made</span></h3>
+                <span class="payment-count" id="paymentCount">0 payments</span>
+            </div>
+
+            <div class="payments-table-wrapper">
+                <div id="paymentsContent">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner"></i>
+                        <span>Loading payments...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        (function() {
+            "use strict";
+
+            // ----- DOM REFERENCES -----
+            const messageArea = document.getElementById('messageArea');
+            const paymentsContent = document.getElementById('paymentsContent');
+            const paymentTitle = document.getElementById('paymentTitle');
+            const paymentCount = document.getElementById('paymentCount');
+            const totalMade = document.getElementById('totalMade');
+            const totalReceived = document.getElementById('totalReceived');
+            const totalTransactions = document.getElementById('totalTransactions');
+            const madeCount = document.getElementById('madeCount');
+            const receivedCount = document.getElementById('receivedCount');
+
+            // ----- STATE -----
+            let currentTab = 'made';
+            let paymentsMade = [];
+            let paymentsReceived = [];
+
+            // ----- API ENDPOINTS -----
+            const API = {
+                paymentsMade: '/admin/payment_made',
+                paymentsReceived: '/admin/payments/received'
+            };
+
+            // ----- UTILITY FUNCTIONS -----
+            function showMessage(message, type = 'info') {
+                messageArea.textContent = message;
+                messageArea.className = `message-area show ${type}`;
+                clearTimeout(window.messageTimeout);
+                window.messageTimeout = setTimeout(() => {
+                    messageArea.classList.remove('show');
+                }, 5000);
+            }
+
+            function formatCurrency(amount) {
+                return parseFloat(amount).toFixed(2);
+            }
+
+            function formatDate(dateString) {
+                if (!dateString) return 'N/A';
+                try {
+                    const date = new Date(dateString);
+                    if (isNaN(date.getTime())) return 'N/A';
+                    return date.toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                } catch (e) {
+                    return 'N/A';
+                }
+            }
+
+            function getStatusBadge(amount) {
+                // If amount is positive, it's a receipt
+                // If negative, it's a payment
+                const isPositive = parseFloat(amount) >= 0;
+                const status = isPositive ? 'completed' : 'pending';
+                const label = isPositive ? 'Received' : 'Pending';
+                const className = isPositive ? 'completed' : 'pending';
+                return `<span class="status-badge ${className}">${label}</span>`;
+            }
+
+            // ----- CALCULATE STATS -----
+            function calculateStats() {
+                const madeTotal = paymentsMade.reduce((sum, p) => sum + parseFloat(p.amount || 0), 0);
+                const receivedTotal = paymentsReceived.reduce((sum, p) => sum + parseFloat(p.amount || 0), 0);
+                const total = madeTotal + receivedTotal;
+
+                totalMade.textContent = formatCurrency(madeTotal);
+                totalReceived.textContent = formatCurrency(receivedTotal);
+                totalTransactions.textContent = paymentsMade.length + paymentsReceived.length;
+                madeCount.textContent = paymentsMade.length;
+                receivedCount.textContent = paymentsReceived.length;
+            }
+
+            // ----- RENDER PAYMENTS -----
+            function renderPayments(payments, title) {
+                if (!payments || payments.length === 0) {
+                    paymentsContent.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-credit-card"></i>
+                            <h4>No payments found</h4>
+                            <p>There are no ${title.toLowerCase()} to display.</p>
+                        </div>
+                    `;
+                    paymentCount.textContent = '0 payments';
+                    return;
+                }
+
+                let html = `
+                    <table class="payments-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                payments.forEach((payment, index) => {
+                    const amount = parseFloat(payment.amount || 0);
+                    const isPositive = amount >= 0;
+                    const amountClass = isPositive ? 'positive' : 'negative';
+                    const amountDisplay = (isPositive ? '+' : '') + formatCurrency(amount);
+                    
+                    html += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td class="amount-cell ${amountClass}">
+                                $${amountDisplay}
+                            </td>
+                            <td>${formatDate(payment.date_time)}</td>
+                            <td>${getStatusBadge(amount)}</td>
+                        </tr>
+                    `;
+                });
+
+                html += `
+                        </tbody>
+                    </table>
+                `;
+
+                paymentsContent.innerHTML = html;
+                paymentCount.textContent = `${payments.length} payment${payments.length > 1 ? 's' : ''}`;
+            }
+
+            // ----- SWITCH TAB -----
+            window.switchTab = function(tab) {
+                currentTab = tab;
+                
+                // Update active tab
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.tab === tab);
+                });
+
+                // Update title and render
+                if (tab === 'made') {
+                    paymentTitle.textContent = 'Payments Made';
+                    renderPayments(paymentsMade, 'Payments Made');
+                } else {
+                    paymentTitle.textContent = 'Payments Received';
+                    renderPayments(paymentsReceived, 'Payments Received');
+                }
+            };
+
+            // ----- LOAD PAYMENTS MADE -----
+            async function loadPaymentsMade() {
+                try {
+                    const response = await fetch(API.paymentsMade, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                        return;
+                    }
+
+                    if (data.success) {
+                        paymentsMade = data.payments || [];
+                        calculateStats();
+                        
+                        // If current tab is 'made', render
+                        if (currentTab === 'made') {
+                            renderPayments(paymentsMade, 'Payments Made');
+                        }
+                        
+                        if (data.message) {
+                            showMessage(data.message, 'success');
+                        }
+                    } else {
+                        paymentsMade = [];
+                        calculateStats();
+                        if (data.message) {
+                            showMessage(data.message, 'error');
+                        }
+                        if (currentTab === 'made') {
+                            renderPayments([], 'Payments Made');
+                        }
+                    }
+                } catch (error) {
+                    showMessage('Failed to load payments made. Please try again.', 'error');
+                    if (currentTab === 'made') {
+                        renderPayments([], 'Payments Made');
+                    }
+                }
+            }
+
+            // ----- LOAD PAYMENTS RECEIVED -----
+            async function loadPaymentsReceived() {
+                try {
+                    const response = await fetch(API.paymentsReceived, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                        return;
+                    }
+
+                    if (data.success) {
+                        paymentsReceived = data.payments || [];
+                        calculateStats();
+                        
+                        // If current tab is 'received', render
+                        if (currentTab === 'received') {
+                            renderPayments(paymentsReceived, 'Payments Received');
+                        }
+                        
+                        if (data.message) {
+                            // Only show if not already shown
+                            if (!document.querySelector('.message-area.show')) {
+                                showMessage(data.message, 'success');
+                            }
+                        }
+                    } else {
+                        paymentsReceived = [];
+                        calculateStats();
+                        if (data.message) {
+                            showMessage(data.message, 'error');
+                        }
+                        if (currentTab === 'received') {
+                            renderPayments([], 'Payments Received');
+                        }
+                    }
+                } catch (error) {
+                    showMessage('Failed to load payments received. Please try again.', 'error');
+                    if (currentTab === 'received') {
+                        renderPayments([], 'Payments Received');
+                    }
+                }
+            }
+
+            // ----- INIT -----
+            async function init() {
+                // Show loading state
+                paymentsContent.innerHTML = `
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner"></i>
+                        <span>Loading payments...</span>
+                    </div>
+                `;
+
+                // Load both data sets in parallel
+                await Promise.all([
+                    loadPaymentsMade(),
+                    loadPaymentsReceived()
+                ]);
+
+                // Ensure the correct tab is rendered
+                if (currentTab === 'made') {
+                    renderPayments(paymentsMade, 'Payments Made');
+                } else {
+                    renderPayments(paymentsReceived, 'Payments Received');
+                }
+            }
+
+            // Start
+            init();
+
+        })();
+    </script>
+
+</body>
+</html>

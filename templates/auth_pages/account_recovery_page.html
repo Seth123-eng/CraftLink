@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <title>CraftLink · Account Recovery</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* ----- ROOT VARIABLES (matching CraftLink) ----- */
+        :root {
+            --primary: #2a6f6f;
+            --primary-light: #3d8f8f;
+            --primary-dark: #1d4f4f;
+            --gradient: linear-gradient(145deg, #1d4f4f, #3d9e9e);
+            --bg: #eef2f7;
+            --card-bg: rgba(255, 255, 255, 0.65);
+            --border: rgba(45, 75, 75, 0.12);
+            --text-dark: #1e2b2b;
+            --text-light: #3f5555;
+            --text-muted: #6b8a8a;
+            --danger: #c94a4a;
+            --success: #2a7a5a;
+            --radius: 20px;
+            --shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+            --glow: 0 0 30px rgba(42, 111, 111, 0.08);
+        }
+
+        /* ----- RESET & BASE ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(42, 111, 111, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(42, 111, 111, 0.03) 0%, transparent 50%);
+        }
+
+        /* ----- MAIN CONTAINER ----- */
+        .recovery-container {
+            width: 100%;
+            max-width: 480px;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 40px 32px;
+            transition: all 0.3s ease;
+        }
+
+        .recovery-container:hover {
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.1);
+        }
+
+        /* ----- BRAND ----- */
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 28px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 28px;
+        }
+
+        .brand .brand-icon {
+            background: rgba(42, 111, 111, 0.1);
+            padding: 10px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .brand .brand-icon i {
+            font-size: 32px;
+            color: var(--primary-light);
+        }
+
+        .brand .brand-text h1 {
+            font-size: 28px;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .brand .brand-text span {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
+            display: block;
+            margin-top: 2px;
+        }
+
+        /* ----- ICON ----- */
+        .recovery-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+        }
+
+        .recovery-icon i {
+            font-size: 32px;
+            color: white;
+        }
+
+        /* ----- HEADING ----- */
+        .recovery-heading {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .recovery-heading h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+            letter-spacing: -0.3px;
+            margin-bottom: 8px;
+        }
+
+        .recovery-heading p {
+            font-size: 15px;
+            color: var(--text-light);
+            line-height: 1.6;
+            max-width: 380px;
+            margin: 0 auto;
+        }
+
+        /* ----- MESSAGE AREA ----- */
+        .message-area {
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        .message-area.show {
+            display: block;
+        }
+
+        .message-area.success {
+            background: rgba(42, 122, 90, 0.08);
+            color: var(--success);
+            border: 1px solid rgba(42, 122, 90, 0.2);
+        }
+
+        .message-area.error {
+            background: rgba(201, 74, 74, 0.08);
+            color: var(--danger);
+            border: 1px solid rgba(201, 74, 74, 0.2);
+        }
+
+        .message-area.info {
+            background: rgba(42, 111, 111, 0.08);
+            color: var(--primary);
+            border: 1px solid rgba(42, 111, 111, 0.2);
+        }
+
+        .message-area .message-icon {
+            margin-right: 8px;
+        }
+
+        /* ----- FORM ----- */
+        .recovery-form .form-group {
+            margin-bottom: 18px;
+        }
+
+        .recovery-form .form-group label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .recovery-form .form-group label i {
+            color: var(--primary-light);
+            margin-right: 6px;
+        }
+
+        .recovery-form .form-group .input-wrapper {
+            position: relative;
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+
+        .recovery-form .form-group .input-wrapper:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(42, 111, 111, 0.1);
+        }
+
+        .recovery-form .form-group .input-wrapper i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 16px;
+        }
+
+        .recovery-form .form-group .input-wrapper input {
+            width: 100%;
+            padding: 14px 16px 14px 44px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            outline: none;
+            color: var(--text-dark);
+            background: transparent;
+            font-family: inherit;
+        }
+
+        .recovery-form .form-group .input-wrapper input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .recovery-form .form-group .input-wrapper .toggle-password {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 16px;
+            transition: 0.2s;
+        }
+
+        .recovery-form .form-group .input-wrapper .toggle-password:hover {
+            color: var(--primary);
+        }
+
+        /* Password Strength Indicator */
+        .password-strength {
+            margin-top: 8px;
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .password-strength .strength-bar {
+            flex: 1;
+            height: 4px;
+            background: #dce2e8;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .password-strength .strength-bar .strength-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 4px;
+            transition: width 0.3s ease, background 0.3s ease;
+        }
+
+        .password-strength .strength-text {
+            font-size: 12px;
+            color: var(--text-muted);
+            min-width: 60px;
+            text-align: right;
+        }
+
+        /* ----- BUTTON ----- */
+        .btn-reset {
+            display: block;
+            width: 100%;
+            padding: 14px 24px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.25s;
+            cursor: pointer;
+            font-family: inherit;
+            margin-top: 8px;
+        }
+
+        .btn-reset:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(42, 111, 111, 0.2);
+        }
+
+        .btn-reset:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-reset .btn-icon {
+            margin-right: 8px;
+        }
+
+        .btn-reset .spinner {
+            display: none;
+            animation: spin 1s linear infinite;
+        }
+
+        .btn-reset.loading .spinner {
+            display: inline-block;
+        }
+
+        .btn-reset.loading .btn-text {
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ----- FOOTER ----- */
+        .recovery-footer {
+            margin-top: 28px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .recovery-footer p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .recovery-footer p:first-child {
+            margin-bottom: 6px;
+        }
+
+        .recovery-footer i {
+            margin-right: 4px;
+        }
+
+        .recovery-footer .back-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .recovery-footer .back-link:hover {
+            text-decoration: underline;
+        }
+
+        /* ----- RESPONSIVE ----- */
+        @media (max-width: 520px) {
+            .recovery-container {
+                padding: 28px 20px;
+            }
+
+            .brand .brand-text h1 {
+                font-size: 24px;
+            }
+
+            .recovery-heading h2 {
+                font-size: 20px;
+            }
+
+            .recovery-heading p {
+                font-size: 14px;
+            }
+
+            .recovery-form .form-group .input-wrapper input {
+                font-size: 14px;
+                padding: 12px 14px 12px 40px;
+            }
+
+            .btn-reset {
+                font-size: 15px;
+                padding: 12px 20px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .recovery-container {
+                padding: 20px 16px;
+            }
+
+            .brand .brand-icon i {
+                font-size: 24px;
+            }
+
+            .brand .brand-text h1 {
+                font-size: 20px;
+            }
+
+            .recovery-icon {
+                width: 56px;
+                height: 56px;
+            }
+
+            .recovery-icon i {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== MAIN CONTAINER ===== -->
+    <div class="recovery-container">
+        
+        <!-- Brand -->
+        <div class="brand">
+            <div class="brand-icon">
+                <i class="fas fa-handshake"></i>
+            </div>
+            <div class="brand-text">
+                <h1>CraftLink</h1>
+                <span>Professional Network</span>
+            </div>
+        </div>
+
+        <!-- Icon -->
+        <div class="recovery-icon">
+            <i class="fas fa-key"></i>
+        </div>
+
+        <!-- Heading -->
+        <div class="recovery-heading">
+            <h2>Set New Password</h2>
+            <p>Create a strong password for your account.</p>
+        </div>
+
+        <!-- Message Area -->
+        <div id="messageArea" class="message-area">
+            <i class="fas fa-info-circle message-icon"></i>
+            <span id="messageText">Message</span>
+        </div>
+
+        <!-- Form -->
+        <form id="recoveryForm" class="recovery-form">
+            <!-- Password Field -->
+            <div class="form-group">
+                <label><i class="fas fa-lock"></i> New Password</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock"></i>
+                    <input 
+                        type="password" 
+                        id="passwordInput" 
+                        name="password"
+                        placeholder="Enter new password" 
+                        required
+                        minlength="8"
+                        autocomplete="new-password"
+                    />
+                    <span class="toggle-password" data-target="passwordInput">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                </div>
+                <!-- Password Strength Indicator -->
+                <div class="password-strength" id="strengthIndicator">
+                    <div class="strength-bar">
+                        <div class="strength-fill" id="strengthFill"></div>
+                    </div>
+                    <span class="strength-text" id="strengthText">Weak</span>
+                </div>
+            </div>
+
+            <!-- Confirm Password Field -->
+            <div class="form-group">
+                <label><i class="fas fa-check-circle"></i> Confirm Password</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-check-circle"></i>
+                    <input 
+                        type="password" 
+                        id="confirmPasswordInput" 
+                        name="password_confirm"
+                        placeholder="Confirm new password" 
+                        required
+                        minlength="8"
+                        autocomplete="new-password"
+                    />
+                    <span class="toggle-password" data-target="confirmPasswordInput">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                </div>
+                <small id="passwordMatchHint" style="display: block; margin-top: 4px; font-size: 12px; color: var(--text-muted);">
+                    <i class="fas fa-info-circle"></i> Passwords must match
+                </small>
+            </div>
+
+            <button type="submit" class="btn-reset" id="resetBtn">
+                <i class="fas fa-spinner spinner"></i>
+                <i class="fas fa-undo-alt btn-icon"></i>
+                <span class="btn-text">Reset Password</span>
+            </button>
+        </form>
+
+        <!-- Footer -->
+        <div class="recovery-footer">
+            <p><i class="fas fa-shield-alt"></i> Your password is securely encrypted</p>
+            <p>
+                <i class="fas fa-arrow-left"></i> 
+                <a href="{{ url_for('timezone_bp.sign_up_page') }}" class="back-link">Back to Sign In</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        (function() {
+            "use strict";
+
+            // ----- DOM REFERENCES -----
+            const form = document.getElementById('recoveryForm');
+            const passwordInput = document.getElementById('passwordInput');
+            const confirmPasswordInput = document.getElementById('confirmPasswordInput');
+            const resetBtn = document.getElementById('resetBtn');
+            const messageArea = document.getElementById('messageArea');
+            const messageText = document.getElementById('messageText');
+            const strengthFill = document.getElementById('strengthFill');
+            const strengthText = document.getElementById('strengthText');
+            const passwordMatchHint = document.getElementById('passwordMatchHint');
+
+            // ----- API ENDPOINT -----
+            const API = {
+                passwordReset: '/password_reset'
+            };
+
+            // ----- UTILITY FUNCTIONS -----
+            function showMessage(message, type = 'info') {
+                if (!messageArea || !messageText) return;
+                
+                const icons = {
+                    success: 'fa-check-circle',
+                    error: 'fa-exclamation-circle',
+                    info: 'fa-info-circle'
+                };
+                
+                messageText.textContent = message;
+                messageArea.className = `message-area show ${type}`;
+                
+                // Update icon
+                const icon = messageArea.querySelector('.message-icon');
+                if (icon) {
+                    icon.className = `message-icon fas ${icons[type] || icons.info}`;
+                }
+                
+                clearTimeout(window.messageTimeout);
+                window.messageTimeout = setTimeout(() => {
+                    messageArea.classList.remove('show');
+                }, 6000);
+            }
+
+            function setLoading(isLoading) {
+                if (!resetBtn) return;
+                if (isLoading) {
+                    resetBtn.classList.add('loading');
+                    resetBtn.disabled = true;
+                } else {
+                    resetBtn.classList.remove('loading');
+                    resetBtn.disabled = false;
+                }
+            }
+
+            // ----- PASSWORD STRENGTH -----
+            function checkPasswordStrength(password) {
+                let strength = 0;
+                
+                if (password.length >= 8) strength += 1;
+                if (password.length >= 12) strength += 1;
+                if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength += 1;
+                if (/\d/.test(password)) strength += 1;
+                if (/[^a-zA-Z0-9]/.test(password)) strength += 1;
+                
+                return strength;
+            }
+
+            function updateStrengthIndicator(password) {
+                if (!password) {
+                    strengthFill.style.width = '0%';
+                    strengthFill.style.background = '#dce2e8';
+                    strengthText.textContent = 'Weak';
+                    return;
+                }
+
+                const strength = checkPasswordStrength(password);
+                let percentage, color, label;
+
+                switch (strength) {
+                    case 0:
+                    case 1:
+                        percentage = 20;
+                        color = '#c94a4a';
+                        label = 'Weak';
+                        break;
+                    case 2:
+                        percentage = 40;
+                        color = '#f39c12';
+                        label = 'Fair';
+                        break;
+                    case 3:
+                        percentage = 60;
+                        color = '#f39c12';
+                        label = 'Good';
+                        break;
+                    case 4:
+                        percentage = 80;
+                        color = '#2a7a5a';
+                        label = 'Strong';
+                        break;
+                    case 5:
+                        percentage = 100;
+                        color = '#2a7a5a';
+                        label = 'Very Strong';
+                        break;
+                    default:
+                        percentage = 0;
+                        color = '#dce2e8';
+                        label = 'Weak';
+                }
+
+                strengthFill.style.width = percentage + '%';
+                strengthFill.style.background = color;
+                strengthText.textContent = label;
+                strengthText.style.color = color;
+            }
+
+            // ----- CHECK PASSWORD MATCH -----
+            function checkPasswordMatch() {
+                const password = passwordInput.value;
+                const confirm = confirmPasswordInput.value;
+                
+                if (!password || !confirm) {
+                    passwordMatchHint.innerHTML = '<i class="fas fa-info-circle"></i> Passwords must match';
+                    passwordMatchHint.style.color = 'var(--text-muted)';
+                    return false;
+                }
+                
+                if (password === confirm) {
+                    passwordMatchHint.innerHTML = '<i class="fas fa-check-circle" style="color: var(--success);"></i> Passwords match!';
+                    passwordMatchHint.style.color = 'var(--success)';
+                    return true;
+                } else {
+                    passwordMatchHint.innerHTML = '<i class="fas fa-exclamation-circle" style="color: var(--danger);"></i> Passwords do not match';
+                    passwordMatchHint.style.color = 'var(--danger)';
+                    return false;
+                }
+            }
+
+            // ----- EVENT LISTENERS -----
+            // Password strength
+            passwordInput.addEventListener('input', function() {
+                updateStrengthIndicator(this.value);
+                checkPasswordMatch();
+            });
+
+            // Confirm password match
+            confirmPasswordInput.addEventListener('input', function() {
+                checkPasswordMatch();
+            });
+
+            // Toggle password visibility
+            document.querySelectorAll('.toggle-password').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const targetId = this.dataset.target;
+                    const input = document.getElementById(targetId);
+                    if (!input) return;
+                    
+                    const icon = this.querySelector('i');
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.className = 'fas fa-eye-slash';
+                    } else {
+                        input.type = 'password';
+                        icon.className = 'fas fa-eye';
+                    }
+                });
+            });
+
+            // ----- FORM SUBMIT -----
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const password = passwordInput.value.trim();
+                const confirmPassword = confirmPasswordInput.value.trim();
+                
+                // Validate password
+                if (!password || password.length < 8) {
+                    showMessage('Password must be at least 8 characters long.', 'error');
+                    passwordInput.focus();
+                    return;
+                }
+                
+                // Check if passwords match
+                if (password !== confirmPassword) {
+                    showMessage('Passwords do not match. Please try again.', 'error');
+                    confirmPasswordInput.focus();
+                    return;
+                }
+
+                // Check password strength (optional: warn if weak)
+                const strength = checkPasswordStrength(password);
+                if (strength < 2) {
+                    if (!confirm('Your password seems weak. Are you sure you want to use this password?')) {
+                        return;
+                    }
+                }
+
+                // Show loading state
+                setLoading(true);
+                messageArea.classList.remove('show');
+
+                try {
+                    // Send request
+                    const formData = new FormData();
+                    formData.append('password', password);
+                    formData.append('password_confirm', confirmPassword);
+
+                    const response = await fetch(API.passwordReset, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    // Handle redirect if present
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                        return;
+                    }
+
+                    // Handle response
+                    if (data.success) {
+                        showMessage(data.msg || 'Password reset successfully!', 'success');
+                        
+                        // Clear form
+                        passwordInput.value = '';
+                        confirmPasswordInput.value = '';
+                        updateStrengthIndicator('');
+                        checkPasswordMatch();
+                        
+                        // Redirect to login after success
+                        if (data.link) {
+                            setTimeout(() => {
+                                window.location.href = data.link;
+                            }, 2000);
+                        } else {
+                            setTimeout(() => {
+                                window.location.href = '/login';
+                            }, 2000);
+                        }
+                    } else {
+                        showMessage(data.msg || data.message || 'Failed to reset password. Please try again.', 'error');
+                    }
+
+                } catch (error) {
+                    showMessage('An error occurred. Please try again.', 'error');
+                } finally {
+                    setLoading(false);
+                }
+            });
+
+            // ----- AUTO-FOCUS -----
+            passwordInput.focus();
+
+            // ----- KEYBOARD SHORTCUT: Enter to submit -----
+            passwordInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    confirmPasswordInput.focus();
+                }
+            });
+
+            confirmPasswordInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    form.dispatchEvent(new Event('submit'));
+                }
+            });
+
+        })();
+    </script>
+
+</body>
+</html>

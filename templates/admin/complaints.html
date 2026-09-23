@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <title>CraftLink · Admin · Complaints</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* ----- ROOT VARIABLES (matching dashboard) ----- */
+        :root {
+            --primary: #2a6f6f;
+            --primary-light: #3d8f8f;
+            --primary-dark: #1d4f4f;
+            --gradient: linear-gradient(145deg, #1d4f4f, #3d9e9e);
+            --bg: #eef2f7;
+            --card-bg: rgba(255, 255, 255, 0.65);
+            --glass-bg: rgba(255, 255, 255, 0.5);
+            --border: rgba(45, 75, 75, 0.12);
+            --text-dark: #1e2b2b;
+            --text-light: #3f5555;
+            --text-muted: #6b8a8a;
+            --danger: #c94a4a;
+            --success: #2a7a5a;
+            --warning: #f39c12;
+            --radius: 20px;
+            --shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+            --glow: 0 0 30px rgba(42, 111, 111, 0.08);
+        }
+
+        /* ----- RESET & BASE ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            color: var(--text-dark);
+            padding: 20px;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(42, 111, 111, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(42, 111, 111, 0.03) 0%, transparent 50%);
+        }
+
+        /* ----- MAIN CONTENT ----- */
+        .main-content {
+            width: 100%;
+            max-width: 1400px;
+            padding: 30px 40px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            margin: 0 auto;
+        }
+
+        /* ----- TOP HEADER ----- */
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .top-header .page-title h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .top-header .page-title h2 i {
+            color: var(--primary-light);
+            font-size: 26px;
+        }
+
+        .top-header .page-title p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .top-header .header-actions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .top-header .header-actions .admin-badge {
+            padding: 6px 16px;
+            border-radius: 30px;
+            background: rgba(42, 111, 111, 0.1);
+            color: var(--primary);
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .top-header .header-actions .stats-badge {
+            padding: 6px 14px;
+            border-radius: 30px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            font-size: 13px;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .top-header .header-actions .stats-badge i {
+            color: var(--primary-light);
+        }
+
+        .top-header .header-actions .stats-badge .count {
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .top-header .header-actions .icon-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.5);
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-size: 18px;
+            backdrop-filter: blur(4px);
+        }
+
+        .top-header .header-actions .icon-btn:hover {
+            background: rgba(42, 111, 111, 0.1);
+            color: var(--primary);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        /* ----- MESSAGE AREA ----- */
+        .message-area {
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .message-area.show {
+            display: block;
+        }
+
+        .message-area.success {
+            background: rgba(42, 122, 90, 0.08);
+            color: var(--success);
+            border: 1px solid rgba(42, 122, 90, 0.2);
+        }
+
+        .message-area.error {
+            background: rgba(201, 74, 74, 0.08);
+            color: var(--danger);
+            border: 1px solid rgba(201, 74, 74, 0.2);
+        }
+
+        .message-area.info {
+            background: rgba(42, 111, 111, 0.08);
+            color: var(--primary);
+            border: 1px solid rgba(42, 111, 111, 0.2);
+        }
+
+        /* ----- FILTER SECTION ----- */
+        .filter-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-section .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-section .filter-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .filter-section .filter-group select {
+            padding: 8px 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: #ffffff;
+            font-size: 13px;
+            outline: none;
+            transition: all 0.2s;
+            color: var(--text-dark);
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b8a8a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            padding-right: 32px;
+        }
+
+        .filter-section .filter-group select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(42, 111, 111, 0.1);
+        }
+
+        .filter-section .search-wrapper {
+            flex: 1;
+            position: relative;
+            min-width: 200px;
+        }
+
+        .filter-section .search-wrapper input {
+            width: 100%;
+            padding: 8px 16px 8px 40px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: #ffffff;
+            font-size: 13px;
+            outline: none;
+            transition: all 0.2s;
+            color: var(--text-dark);
+        }
+
+        .filter-section .search-wrapper input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(42, 111, 111, 0.1);
+        }
+
+        .filter-section .search-wrapper i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        /* ----- COMPLAINTS GRID ----- */
+        .complaints-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        .complaint-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .complaint-card:hover {
+            border-color: rgba(42, 111, 111, 0.2);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+        }
+
+        .complaint-card.unread {
+            border-left: 4px solid var(--primary);
+            background: rgba(42, 111, 111, 0.03);
+        }
+
+        .complaint-card .complaint-content {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .complaint-card .complaint-content .complaint-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        .complaint-card .complaint-content .complaint-header .complaint-id {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: var(--bg);
+            padding: 2px 10px;
+            border-radius: 30px;
+        }
+
+        .complaint-card .complaint-content .complaint-header .complaint-type {
+            font-size: 13px;
+            font-weight: 600;
+            padding: 4px 14px;
+            border-radius: 30px;
+            background: rgba(42, 111, 111, 0.1);
+            color: var(--primary);
+        }
+
+        .complaint-card .complaint-content .complaint-header .complaint-status {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 12px;
+            border-radius: 30px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .complaint-card .complaint-content .complaint-header .complaint-status.read {
+            background: rgba(42, 122, 90, 0.1);
+            color: var(--success);
+        }
+
+        .complaint-card .complaint-content .complaint-header .complaint-status.unread {
+            background: rgba(243, 156, 18, 0.1);
+            color: var(--warning);
+        }
+
+        .complaint-card .complaint-content .complaint-info {
+            color: var(--text-light);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 8px;
+            word-wrap: break-word;
+        }
+
+        .complaint-card .complaint-content .complaint-meta {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .complaint-card .complaint-content .complaint-meta i {
+            margin-right: 4px;
+        }
+
+        .complaint-card .complaint-content .complaint-meta .complained-to {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .complaint-card .complaint-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+            flex-wrap: wrap;
+        }
+
+        .complaint-card .complaint-actions .btn-action {
+            padding: 8px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-dark);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .complaint-card .complaint-actions .btn-action:hover {
+            background: rgba(42, 111, 111, 0.06);
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .complaint-card .complaint-actions .btn-action.mark-read {
+            background: var(--primary);
+            color: white;
+            border: none;
+        }
+
+        .complaint-card .complaint-actions .btn-action.mark-read:hover {
+            background: var(--primary-light);
+            box-shadow: 0 8px 24px rgba(42, 111, 111, 0.2);
+        }
+
+        .complaint-card .complaint-actions .btn-action.mark-read:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .complaint-card .complaint-actions .btn-action.delete {
+            color: var(--danger);
+            border-color: rgba(201, 74, 74, 0.2);
+        }
+
+        .complaint-card .complaint-actions .btn-action.delete:hover {
+            background: rgba(201, 74, 74, 0.06);
+            border-color: var(--danger);
+        }
+
+        /* ----- EMPTY STATE ----- */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+            grid-column: 1 / -1;
+        }
+
+        .empty-state i {
+            font-size: 60px;
+            color: var(--primary-light);
+            opacity: 0.3;
+            margin-bottom: 16px;
+        }
+
+        .empty-state h4 {
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+        }
+
+        /* ----- LOADING ----- */
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+            gap: 12px;
+            color: var(--text-muted);
+            grid-column: 1 / -1;
+        }
+
+        .loading-spinner i {
+            font-size: 28px;
+            color: var(--primary-light);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ----- RESPONSIVE ----- */
+        @media (max-width: 1024px) {
+            .main-content {
+                padding: 20px;
+            }
+
+            .top-header .page-title h2 {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 16px;
+            }
+
+            .top-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .top-header .header-actions {
+                width: 100%;
+                justify-content: flex-start;
+                flex-wrap: wrap;
+            }
+
+            .filter-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-section .filter-group {
+                flex-wrap: wrap;
+            }
+
+            .filter-section .search-wrapper {
+                min-width: unset;
+            }
+
+            .complaint-card {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .complaint-card .complaint-actions {
+                justify-content: flex-end;
+                margin-top: 8px;
+                border-top: 1px solid var(--border);
+                padding-top: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 12px;
+            }
+
+            .top-header .page-title h2 {
+                font-size: 20px;
+            }
+
+            .top-header .header-actions .admin-badge {
+                font-size: 11px;
+                padding: 4px 12px;
+            }
+
+            .top-header .header-actions .stats-badge {
+                font-size: 11px;
+                padding: 4px 12px;
+            }
+
+            .complaint-card {
+                padding: 16px;
+            }
+
+            .complaint-card .complaint-actions .btn-action {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+        }
+
+        /* ----- SCROLLBAR ----- */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-light);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+        <!-- Message Area -->
+        <div id="messageArea" class="message-area"></div>
+
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="page-title">
+                <h2><i class="fas fa-exclamation-triangle"></i></h2>
+                <p>Manage user complaints and reports</p>
+            </div>
+            <div class="header-actions">
+                <span class="admin-badge"><i class="fas fa-shield-alt"></i> Admin</span>
+                <span class="stats-badge">
+                    <i class="fas fa-envelope"></i>
+                    Unread: <span class="count" id="unreadCount">0</span>
+                </span>
+                <span class="stats-badge">
+                    <i class="fas fa-list"></i>
+                    Total: <span class="count" id="totalCount">0</span>
+                </span>
+                <button class="icon-btn" onclick="refreshComplaints()" title="Refresh">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="filter-group">
+                <label><i class="fas fa-filter"></i> Status:</label>
+                <select id="statusFilter">
+                    <option value="all">All Complaints</option>
+                    <option value="unread">Unread</option>
+                    <option value="read">Read</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label><i class="fas fa-tag"></i> Type:</label>
+                <select id="typeFilter">
+                    <option value="all">All Types</option>
+                    <option value="harassment">Harassment</option>
+                    <option value="fraud">Fraud</option>
+                    <option value="scam">Scam</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="search-wrapper">
+                <i class="fas fa-search"></i>
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="Search complaints..." 
+                />
+            </div>
+        </div>
+
+        <!-- Complaints Grid -->
+        <div class="complaints-grid" id="complaintsGrid">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner"></i>
+                <span>Loading complaints...</span>
+            </div>
+        </div>
+    </main>
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        (function() {
+            "use strict";
+
+            // ----- DOM REFERENCES -----
+            const complaintsGrid = document.getElementById('complaintsGrid');
+            const messageArea = document.getElementById('messageArea');
+            const statusFilter = document.getElementById('statusFilter');
+            const typeFilter = document.getElementById('typeFilter');
+            const searchInput = document.getElementById('searchInput');
+            const unreadCount = document.getElementById('unreadCount');
+            const totalCount = document.getElementById('totalCount');
+
+            // ----- API ENDPOINTS -----
+            const API = {
+                getComplaints: '/get/complaints',
+                markAsRead: (id) => `/mark/complaints/read/${id}`,
+                removeComplaint: (id) => `/remove/complaint/${id}`
+            };
+
+            // ----- STATE -----
+            let allComplaints = [];
+            let filteredComplaints = [];
+            let isLoading = false;
+
+            // ----- UTILITY FUNCTIONS -----
+            function showMessage(message, type = 'info') {
+                if (!messageArea) return;
+                messageArea.textContent = message;
+                messageArea.className = `message-area show ${type}`;
+                clearTimeout(window.messageTimeout);
+                window.messageTimeout = setTimeout(() => {
+                    if (messageArea) messageArea.classList.remove('show');
+                }, 5000);
+            }
+
+            function formatDate(dateString) {
+                if (!dateString) return 'Date not available';
+                try {
+                    const date = new Date(dateString);
+                    return date.toLocaleString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                } catch {
+                    return dateString;
+                }
+            }
+
+            function truncateText(text, maxLength = 200) {
+                if (!text) return '';
+                if (text.length <= maxLength) return text;
+                return text.substring(0, maxLength) + '...';
+            }
+
+            function getStatusBadge(isRead) {
+                if (isRead) {
+                    return `<span class="complaint-status read"><i class="fas fa-check-circle"></i> Read</span>`;
+                }
+                return `<span class="complaint-status unread"><i class="fas fa-circle"></i> Unread</span>`;
+            }
+
+            function getComplaintTypeBadge(type) {
+                const colors = {
+                    'harassment': 'var(--danger)',
+                    'fraud': 'var(--warning)',
+                    'scam': 'var(--primary)',
+                    'other': 'var(--text-muted)'
+                };
+                const color = colors[type?.toLowerCase()] || 'var(--primary)';
+                return `<span class="complaint-type" style="background: ${color}20; color: ${color};">${type || 'Other'}</span>`;
+            }
+
+            // ----- UPDATE STATS -----
+            function updateStats(complaints) {
+                if (!unreadCount || !totalCount) return;
+                totalCount.textContent = complaints.length;
+                const unread = complaints.filter(c => !c.is_read).length;
+                unreadCount.textContent = unread;
+            }
+
+            // ----- RENDER COMPLAINTS -----
+            function renderComplaints(complaintsData) {
+                if (!complaintsGrid) return;
+                
+                
+                if (!complaintsData || complaintsData.length === 0) {
+                    complaintsGrid.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <h4>No complaints found</h4>
+                            <p>${searchInput && searchInput.value ? 'Try adjusting your search or filters.' : 'There are no complaints to display.'}</p>
+                        </div>
+                    `;
+                    updateStats([]);
+                    return;
+                }
+
+                let html = '';
+                complaintsData.forEach((complaint) => {
+                    const complaintId = complaint.id || '';
+                    const complaintType = complaint.complaint_type || 'Other';
+                    const complaintInfo = complaint.complaint_info || 'No details provided';
+                    const complainedTo = complaint.complained_to || 'Not specified';
+                    const dateTime = complaint.date_time || '';
+                    const isRead = complaint.is_read || false;
+                    const isUnread = !isRead;
+                    
+                    html += `
+                        <div class="complaint-card ${isUnread ? 'unread' : ''}" data-complaint-id="${complaintId}">
+                            <div class="complaint-content">
+                                <div class="complaint-header">
+                                    <span class="complaint-id">#${complaintId.substring(0, 8)}</span>
+                                    ${getComplaintTypeBadge(complaintType)}
+                                    ${getStatusBadge(isRead)}
+                                </div>
+                                <div class="complaint-info">${truncateText(complaintInfo, 300)}</div>
+                                <div class="complaint-meta">
+                                    <span><i class="far fa-calendar-alt"></i> ${formatDate(dateTime)}</span>
+                                    <span class="complained-to">
+                                        <i class="fas fa-user"></i> 
+                                        Complained to: ${complainedTo}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="complaint-actions">
+                                ${!isRead ? `
+                                    <button class="btn-action mark-read" onclick="handleMarkAsRead('${complaintId}')">
+                                        <i class="fas fa-check"></i> Mark as Read
+                                    </button>
+                                ` : ''}
+                                <button class="btn-action delete" onclick="handleRemoveComplaint('${complaintId}')">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                complaintsGrid.innerHTML = html;
+                updateStats(complaintsData);
+            }
+
+            // ----- FILTER COMPLAINTS -----
+            function filterComplaints() {
+                if (!searchInput || !statusFilter || !typeFilter) return;
+                
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                const status = statusFilter.value;
+                const type = typeFilter.value;
+
+                filteredComplaints = allComplaints.filter(complaint => {
+                    const matchSearch = !searchTerm || 
+                        (complaint.complaint_info || '').toLowerCase().includes(searchTerm) ||
+                        (complaint.complaint_type || '').toLowerCase().includes(searchTerm) ||
+                        (complaint.complained_to || '').toLowerCase().includes(searchTerm);
+                    
+                    const matchStatus = status === 'all' || 
+                        (status === 'read' && complaint.is_read) ||
+                        (status === 'unread' && !complaint.is_read);
+                    
+                    const matchType = type === 'all' || 
+                        (complaint.complaint_type || '').toLowerCase() === type;
+                    
+                    return matchSearch && matchStatus && matchType;
+                });
+
+                renderComplaints(filteredComplaints);
+            }
+
+            // ----- LOAD COMPLAINTS -----
+            async function loadComplaints() {
+                if (isLoading || !complaintsGrid) {
+                    return;
+                }
+                
+                try {
+                    isLoading = true;
+                    
+                    complaintsGrid.innerHTML = `
+                        <div class="loading-spinner">
+                            <i class="fas fa-spinner"></i>
+                            <span>Loading complaints...</span>
+                        </div>
+                    `;
+
+                    
+                    const response = await fetch(API.getComplaints, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                        return;
+                    }
+
+                    if (data.success && data.complaints) {
+                        allComplaints = data.complaints;
+                        
+                        filteredComplaints = [...allComplaints];
+                        renderComplaints(filteredComplaints);
+                    } else {
+                        allComplaints = [];
+                        filteredComplaints = [];
+                        renderComplaints([]);
+                        if (data.message && messageArea) {
+                            showMessage(data.message, 'info');
+                        }
+                    }
+                } catch (error) {
+                    if (messageArea) {
+                        showMessage('Failed to load complaints. Please try again.', 'error');
+                    }
+                    if (complaintsGrid) {
+                        complaintsGrid.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i>
+                                <h4>Error loading complaints</h4>
+                                <p>Please refresh the page or try again later.</p>
+                                <p style="font-size: 12px; color: #999; margin-top: 8px;">Error: ${error.message}</p>
+                            </div>
+                        `;
+                    }
+                } finally {
+                    isLoading = false;
+                }
+            }
+
+            // ----- REFRESH COMPLAINTS -----
+            window.refreshComplaints = async function() {
+                const btn = document.querySelector('.icon-btn i');
+                if (btn) {
+                    btn.className = 'fas fa-spinner fa-spin';
+                }
+                await loadComplaints();
+                if (btn) {
+                    setTimeout(() => {
+                        btn.className = 'fas fa-sync-alt';
+                    }, 500);
+                }
+            };
+
+            // ----- MARK AS READ -----
+            window.handleMarkAsRead = async function(complaintId) {
+                if (!complaintId) {
+                    showMessage('Complaint ID not found.', 'error');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(API.markAsRead(complaintId), {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                        return;
+                    }
+
+                    if (data.success) {
+                        showMessage(data.msg || 'Complaint marked as read!', 'success');
+                        await loadComplaints();
+                    } else {
+                        showMessage(data.msg || 'Failed to mark complaint as read.', 'error');
+                    }
+                } catch (error) {
+                    showMessage('An error occurred. Please try again.', 'error');
+                }
+            };
+
+            // ----- REMOVE COMPLAINT -----
+            window.handleRemoveComplaint = async function(complaintId) {
+                if (!complaintId) {
+                    showMessage('Complaint ID not found.', 'error');
+                    return;
+                }
+
+                if (!confirm('Are you sure you want to delete this complaint? This action cannot be undone.')) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch(API.removeComplaint(complaintId), {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                        return;
+                    }
+
+                    if (data.success) {
+                        showMessage(data.msg || 'Complaint deleted successfully!', 'success');
+                        await loadComplaints();
+                    } else {
+                        showMessage(data.msg || 'Failed to delete complaint.', 'error');
+                    }
+                } catch (error) {
+                    showMessage('An error occurred. Please try again.', 'error');
+                }
+            };
+
+            // ----- SEARCH & FILTER EVENTS -----
+            if (searchInput) {
+                searchInput.addEventListener('input', filterComplaints);
+            }
+            if (statusFilter) {
+                statusFilter.addEventListener('change', filterComplaints);
+            }
+            if (typeFilter) {
+                typeFilter.addEventListener('change', filterComplaints);
+            }
+
+            loadComplaints();
+
+            // Auto-refresh every 60 seconds
+            setInterval(loadComplaints, 60000);
+
+        })();
+    </script>
+
+</body>
+</html>

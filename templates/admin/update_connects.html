@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <title>CraftLink · Manage Connects</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* ----- ROOT VARIABLES ----- */
+        :root {
+            --primary: #2a6f6f;
+            --primary-light: #3d8f8f;
+            --primary-dark: #1d4f4f;
+            --gradient: linear-gradient(145deg, #1d4f4f, #3d9e9e);
+            --bg: #eef2f7;
+            --card-bg: rgba(255, 255, 255, 0.65);
+            --glass-bg: rgba(255, 255, 255, 0.5);
+            --border: rgba(45, 75, 75, 0.12);
+            --text-dark: #1e2b2b;
+            --text-light: #3f5555;
+            --text-muted: #6b8a8a;
+            --danger: #c94a4a;
+            --success: #2a7a5a;
+            --warning: #f39c12;
+            --radius: 20px;
+            --shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+            --glow: 0 0 30px rgba(42, 111, 111, 0.08);
+        }
+
+        /* ----- RESET & BASE ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            color: var(--text-dark);
+            padding: 20px;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(42, 111, 111, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(42, 111, 111, 0.03) 0%, transparent 50%);
+        }
+
+        /* ----- MAIN CONTENT ----- */
+        .main-content {
+            width: 100%;
+            max-width: 1200px;
+            padding: 30px 40px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ----- TOP HEADER ----- */
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .top-header .page-title h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .top-header .page-title h2 i {
+            color: var(--primary-light);
+        }
+
+        .top-header .page-title p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .top-header .header-actions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .top-header .header-actions .icon-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.5);
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-size: 18px;
+            backdrop-filter: blur(4px);
+        }
+
+        .top-header .header-actions .icon-btn:hover {
+            background: rgba(42, 111, 111, 0.1);
+            color: var(--primary);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.25s;
+            margin-bottom: 20px;
+        }
+
+        .back-link:hover {
+            color: var(--primary);
+            transform: translateX(-4px);
+        }
+
+        /* ----- CONNECTS CONTENT ----- */
+        .connects-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* ----- CURRENT CONNECTS ----- */
+        .current-connects {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .current-connects .shine {
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+            animation: shineMove 6s infinite ease-in-out;
+            pointer-events: none;
+        }
+
+        @keyframes shineMove {
+            0% { left: -150%; }
+            50% { left: 120%; }
+            100% { left: -150%; }
+        }
+
+        .current-connects .connects-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .current-connects .connects-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: rgba(42, 111, 111, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: var(--primary-light);
+        }
+
+        .current-connects .connects-details h3 {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .current-connects .connects-details .connects-number {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        /* ----- GRID LAYOUT ----- */
+        .connects-grid-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .connects-grid-section .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .connects-grid-section .section-header h3 {
+            font-size: 18px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .connects-grid-section .section-header .actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .connects-grid-section .section-header .btn-add,
+        .connects-grid-section .section-header .btn-save {
+            padding: 10px 20px;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .connects-grid-section .section-header .btn-add {
+            background: var(--primary);
+        }
+
+        .connects-grid-section .section-header .btn-add:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(42, 111, 111, 0.2);
+        }
+
+        .connects-grid-section .section-header .btn-save {
+            background: var(--success);
+        }
+
+        .connects-grid-section .section-header .btn-save:hover {
+            background: #1f8a6a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(42, 122, 90, 0.2);
+        }
+
+        .connects-grid-section .section-header .btn-save:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .connects-grid-section .section-header .btn-save.has-changes {
+            background: var(--warning);
+        }
+
+        .connects-grid-section .section-header .btn-save.has-changes:hover {
+            background: #e08e0b;
+        }
+
+        /* ----- CONNECTS GRID ----- */
+        .connects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .connects-grid .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .connects-grid .empty-state i {
+            font-size: 48px;
+            color: var(--primary-light);
+            opacity: 0.3;
+            display: block;
+            margin-bottom: 16px;
+        }
+
+        /* ----- CONNECT CARD ----- */
+        .connect-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            transition: all 0.25s;
+            position: relative;
+        }
+
+        .connect-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: var(--primary-light);
+        }
+
+        .connect-card .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .connect-card .card-header .connect-badge {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .connect-card .card-header .connect-badge i {
+            color: var(--primary-light);
+            font-size: 20px;
+        }
+
+        .connect-card .card-header .btn-remove {
+            background: none;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            font-size: 16px;
+        }
+
+        .connect-card .card-header .btn-remove:hover {
+            background: rgba(201, 74, 74, 0.1);
+        }
+
+        .connect-card .card-header .btn-remove:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .connect-card .card-body {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .connect-card .card-body .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .connect-card .card-body .field-group label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .connect-card .card-body .field-group input {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
+            background: #fafafa;
+            width: 100%;
+        }
+
+        .connect-card .card-body .field-group input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(42, 111, 111, 0.1);
+            background: white;
+        }
+
+        .connect-card .card-body .field-group .price-per-connect {
+            font-size: 13px;
+            color: var(--text-muted);
+            padding: 4px 8px;
+            background: var(--bg);
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        .connect-card .card-footer {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .connect-card .card-footer .modified-badge {
+            font-size: 11px;
+            color: var(--warning);
+            background: rgba(243, 156, 18, 0.1);
+            padding: 4px 10px;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .connect-card .card-footer .modified-badge.show {
+            display: inline-block;
+        }
+
+        .connect-card.deleting {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        /* ----- MESSAGE AREA ----- */
+        .message-area {
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .message-area.show {
+            display: block;
+        }
+
+        .message-area.success {
+            background: rgba(42, 122, 90, 0.08);
+            color: var(--success);
+            border: 1px solid rgba(42, 122, 90, 0.2);
+        }
+
+        .message-area.error {
+            background: rgba(201, 74, 74, 0.08);
+            color: var(--danger);
+            border: 1px solid rgba(201, 74, 74, 0.2);
+        }
+
+        .message-area.info {
+            background: rgba(42, 111, 111, 0.08);
+            color: var(--primary);
+            border: 1px solid rgba(42, 111, 111, 0.2);
+        }
+
+        /* ----- MODAL ----- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            animation: fadeModal 0.25s ease;
+        }
+
+        @keyframes fadeModal {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 520px;
+            border-radius: 24px;
+            padding: 32px;
+            animation: slideUp 0.25s ease;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes slideUp {
+            0% { transform: translateY(20px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-content .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-content .modal-header h3 {
+            font-size: 20px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-content .modal-header .close-modal {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: 0.2s;
+            line-height: 1;
+        }
+
+        .modal-content .modal-header .close-modal:hover {
+            color: var(--danger);
+        }
+
+        .modal-content .modal-body {
+            color: var(--text-light);
+        }
+
+        .modal-content .form-group {
+            margin-bottom: 16px;
+        }
+
+        .modal-content .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 6px;
+        }
+
+        .modal-content .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: #ffffff;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
+            color: var(--text-dark);
+        }
+
+        .modal-content .form-group input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(42, 111, 111, 0.1);
+        }
+
+        .modal-content .form-group .input-hint {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .modal-content .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 8px;
+            box-shadow: 0 4px 15px rgba(42, 111, 111, 0.2);
+        }
+
+        .modal-content .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(42, 111, 111, 0.35);
+        }
+
+        .modal-content .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ----- RESPONSIVE ----- */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 20px;
+            }
+
+            .top-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .top-header .header-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .current-connects {
+                flex-direction: column;
+                text-align: center;
+                padding: 24px;
+            }
+
+            .current-connects .connects-info {
+                flex-direction: column;
+            }
+
+            .connects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .connects-grid-section .section-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .connects-grid-section .section-header .actions {
+                width: 100%;
+            }
+
+            .connects-grid-section .section-header .btn-add,
+            .connects-grid-section .section-header .btn-save {
+                flex: 1;
+                justify-content: center;
+            }
+
+            .modal-content {
+                padding: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 12px;
+            }
+
+            .top-header .page-title h2 {
+                font-size: 20px;
+            }
+
+            .current-connects .connects-details .connects-number {
+                font-size: 28px;
+            }
+
+            .modal-content {
+                padding: 16px;
+            }
+        }
+
+        /* ----- SCROLLBAR ----- */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-light);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+
+        <!-- Message Area -->
+        <div id="messageArea" class="message-area"></div>
+
+        <!-- Connects Content -->
+        <div class="connects-content">
+            <!-- Current Connects -->
+            <div class="current-connects">
+                <div class="shine"></div>
+                <div class="connects-info">
+                    <div class="connects-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="connects-details">
+                        <h3>Current Connects Packages</h3>
+                        <div class="connects-number" id="totalPackages">0</div>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <span style="font-size: 13px; color: var(--text-muted);">
+                        <i class="fas fa-edit"></i> Edit in place
+                    </span>
+                </div>
+            </div>
+
+            <!-- Connects Grid -->
+            <div class="connects-grid-section">
+                <div class="section-header">
+                    <h3><i class="fas fa-th" style="color: var(--primary-light);"></i> Packages</h3>
+                    <div class="actions">
+                        <button class="btn-add" onclick="openAddModal()">
+                            <i class="fas fa-plus"></i> Add Package
+                        </button>
+                        <button class="btn-save" id="saveBtn" onclick="saveAllConnects()">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                    </div>
+                </div>
+                <div class="connects-grid" id="connectsGrid">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ===== ADD CONNECTS MODAL ===== -->
+    <div class="modal-overlay" id="addModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-plus-circle" style="color: var(--primary-light);"></i> Add Connects Package</h3>
+                <button class="close-modal" onclick="closeAddModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addConnectsForm">
+                    <div class="form-group">
+                        <label>Number of Connects</label>
+                        <input 
+                            type="number" 
+                            id="connectsInput" 
+                            placeholder="e.g., 10" 
+                            required 
+                            min="1"
+                        />
+                        <div class="input-hint">How many connects in this package?</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Cost (KES)</label>
+                        <input 
+                            type="number" 
+                            id="costInput" 
+                            placeholder="e.g., 500" 
+                            required 
+                            min="1"
+                        />
+                        <div class="input-hint">Price in Kenyan Shillings (KES)</div>
+                    </div>
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-plus"></i> Add Package
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        (function() {
+            "use strict";
+
+            // ----- DOM REFERENCES -----
+            const messageArea = document.getElementById('messageArea');
+            const connectsGrid = document.getElementById('connectsGrid');
+            const totalPackages = document.getElementById('totalPackages');
+            const saveBtn = document.getElementById('saveBtn');
+            const addModal = document.getElementById('addModal');
+            const addConnectsForm = document.getElementById('addConnectsForm');
+            const connectsInput = document.getElementById('connectsInput');
+            const costInput = document.getElementById('costInput');
+
+            // ----- STATE -----
+            let connectsPackages = [];
+            let originalPackages = [];
+            let isLoading = false;
+            let hasChanges = false;
+            let isDeleting = false;
+
+            // ----- API ENDPOINTS -----
+            const API = {
+                getConnects: '/get/connects',
+                updateConnects: '/update/connects',
+                removeConnects: (id) => `/remove/connects/${id}`
+            };
+
+            // ----- UTILITY FUNCTIONS -----
+            function showMessage(message, type = 'info') {
+                messageArea.textContent = message;
+                messageArea.className = `message-area show ${type}`;
+                clearTimeout(window.messageTimeout);
+                window.messageTimeout = setTimeout(() => {
+                    messageArea.classList.remove('show');
+                }, 5000);
+            }
+
+            function generateId() {
+                return Date.now().toString(36) + Math.random().toString(36).substr(2);
+            }
+
+            function calculatePricePerConnect(connects, cost) {
+                if (!connects || connects <= 0) return '0.00';
+                return (cost / connects).toFixed(2);
+            }
+
+            // ----- LOAD CONNECTS -----
+            async function loadConnects() {
+                try {
+                    isLoading = true;
+                    saveBtn.disabled = true;
+                    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+                    saveBtn.className = 'btn-save';
+
+                    const response = await fetch(API.getConnects, {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                        return;
+                    }
+
+                    if (data.success && data.connects) {
+                        // Add unique IDs to each package for tracking
+                        connectsPackages = data.connects.map(pkg => ({
+                            ...pkg,
+                            _id: generateId(),
+                            _modified: false,
+                            _isNew: false
+                        }));
+                        // Store original for change detection
+                        originalPackages = JSON.parse(JSON.stringify(connectsPackages));
+                        renderConnectsGrid(connectsPackages);
+                        if (data.message) {
+                            showMessage(data.message, 'success');
+                        }
+                    } else {
+                        connectsPackages = [];
+                        originalPackages = [];
+                        renderConnectsGrid([]);
+                        if (data.message) {
+                            showMessage(data.message, 'info');
+                        }
+                    }
+                } catch (error) {
+                    connectsPackages = [];
+                    originalPackages = [];
+                    renderConnectsGrid([]);
+                    showMessage('Error loading connects. Please refresh the page.', 'error');
+                } finally {
+                    isLoading = false;
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
+                    updateSaveButton();
+                }
+            }
+
+            // ----- RENDER CONNECTS GRID -----
+            function renderConnectsGrid(packages) {
+                if (!packages || packages.length === 0) {
+                    connectsGrid.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-bolt"></i>
+                            <p>No connects packages configured yet.</p>
+                            <p style="font-size: 13px; margin-top: 8px;">Click "Add Package" to create your first package.</p>
+                        </div>
+                    `;
+                    totalPackages.textContent = '0';
+                    return;
+                }
+
+                let html = '';
+                packages.forEach((pkg) => {
+                    const connects = pkg.connects || 0;
+                    const cost = pkg.connects_cost || 0;
+                    const pricePerConnect = calculatePricePerConnect(connects, cost);
+                    const modified = pkg._modified || false;
+                    const isNew = pkg._isNew || false;
+
+                    html += `
+                        <div class="connect-card" data-id="${pkg._id}" data-connect-id="${pkg.connect_id || ''}">
+                            <div class="card-header">
+                                <div class="connect-badge">
+                                    <i class="fas fa-bolt"></i>
+                                    <span>${connects}</span>
+                                    ${isNew ? '<span style="font-size: 12px; color: var(--success);">✨ New</span>' : ''}
+                                </div>
+                                <button class="btn-remove" onclick="removePackage('${pkg._id}')" title="Remove package" ${isDeleting ? 'disabled' : ''}>
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div class="field-group">
+                                    <label>Connects</label>
+                                    <input 
+                                        type="number" 
+                                        class="connects-input" 
+                                        value="${connects}" 
+                                        min="1"
+                                        data-id="${pkg._id}"
+                                        onchange="onPackageChange('${pkg._id}')"
+                                        ${isDeleting ? 'disabled' : ''}
+                                    />
+                                </div>
+                                <div class="field-group">
+                                    <label>Cost (KES)</label>
+                                    <input 
+                                        type="number" 
+                                        class="cost-input" 
+                                        value="${cost}" 
+                                        min="1"
+                                        data-id="${pkg._id}"
+                                        onchange="onPackageChange('${pkg._id}')"
+                                        ${isDeleting ? 'disabled' : ''}
+                                    />
+                                </div>
+                                <div class="field-group">
+                                    <label>Price per Connect</label>
+                                    <span class="price-per-connect" data-id="${pkg._id}">KES ${pricePerConnect}</span>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <span class="modified-badge ${modified ? 'show' : ''}">
+                                    <i class="fas fa-pen"></i> Modified
+                                </span>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                connectsGrid.innerHTML = html;
+                totalPackages.textContent = packages.length;
+                updateSaveButton();
+            }
+
+            // ----- PACKAGE CHANGE HANDLER -----
+            window.onPackageChange = function(id) {
+                const card = document.querySelector(`.connect-card[data-id="${id}"]`);
+                if (!card) return;
+
+                const connectsInput = card.querySelector('.connects-input');
+                const costInput = card.querySelector('.cost-input');
+                const priceDisplay = card.querySelector('.price-per-connect');
+                const badge = card.querySelector('.modified-badge');
+
+                const connects = parseInt(connectsInput.value) || 0;
+                const cost = parseInt(costInput.value) || 0;
+
+                // Update price per connect
+                const pricePerConnect = calculatePricePerConnect(connects, cost);
+                if (priceDisplay) {
+                    priceDisplay.textContent = `KES ${pricePerConnect}`;
+                }
+
+                // Find and update package in state
+                const pkgIndex = connectsPackages.findIndex(p => p._id === id);
+                if (pkgIndex !== -1) {
+                    const original = originalPackages.find(p => p._id === id);
+                    const modified = original && 
+                        (connects !== original.connects || cost !== original.connects_cost);
+
+                    connectsPackages[pkgIndex].connects = connects;
+                    connectsPackages[pkgIndex].connects_cost = cost;
+                    connectsPackages[pkgIndex]._modified = modified;
+
+                    if (badge) {
+                        badge.classList.toggle('show', modified);
+                    }
+                }
+
+                updateSaveButton();
+            };
+
+            // ----- REMOVE PACKAGE -----
+            window.removePackage = async function(id) {
+                if (isDeleting) return;
+                
+                const pkg = connectsPackages.find(p => p._id === id);
+                if (!pkg) return;
+
+                // If it's a new package (not yet saved), just remove from UI
+                if (pkg._isNew) {
+                    const index = connectsPackages.findIndex(p => p._id === id);
+                    if (index !== -1) {
+                        connectsPackages.splice(index, 1);
+                        renderConnectsGrid(connectsPackages);
+                        showMessage('Package removed.', 'info');
+                    }
+                    return;
+                }
+
+                // Confirm deletion for existing packages
+                if (!confirm(`Remove package with ${pkg.connects} connects?`)) return;
+
+                try {
+                    isDeleting = true;
+                    const card = document.querySelector(`.connect-card[data-id="${id}"]`);
+                    if (card) card.classList.add('deleting');
+
+                    const response = await fetch(API.removeConnects(pkg.connect_id), {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                        return;
+                    }
+
+                    if (data.success) {
+                        // Remove from state
+                        const index = connectsPackages.findIndex(p => p._id === id);
+                        if (index !== -1) {
+                            connectsPackages.splice(index, 1);
+                            const origIndex = originalPackages.findIndex(p => p._id === id);
+                            if (origIndex !== -1) {
+                                originalPackages.splice(origIndex, 1);
+                            }
+                        }
+                        renderConnectsGrid(connectsPackages);
+                        showMessage(data.message || 'Package removed successfully!', 'success');
+                    } else {
+                        showMessage(data.message || 'Failed to remove package.', 'error');
+                        if (card) card.classList.remove('deleting');
+                    }
+                } catch (error) {
+                    showMessage('An error occurred while removing the package.', 'error');
+                    const card = document.querySelector(`.connect-card[data-id="${id}"]`);
+                    if (card) card.classList.remove('deleting');
+                } finally {
+                    isDeleting = false;
+                }
+            };
+
+            // ----- UPDATE SAVE BUTTON -----
+            function updateSaveButton() {
+                hasChanges = connectsPackages.some(pkg => pkg._modified) || 
+                           connectsPackages.some(pkg => pkg._isNew) ||
+                           connectsPackages.length !== originalPackages.length ||
+                           JSON.stringify(connectsPackages.map(p => ({connects: p.connects, connects_cost: p.connects_cost}))) !==
+                           JSON.stringify(originalPackages.map(p => ({connects: p.connects, connects_cost: p.connects_cost})));
+
+                if (hasChanges) {
+                    saveBtn.className = 'btn-save has-changes';
+                    saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
+                } else {
+                    saveBtn.className = 'btn-save';
+                    saveBtn.innerHTML = '<i class="fas fa-check"></i> All Saved';
+                }
+            }
+
+            // ----- SAVE ALL CONNECTS -----
+            window.saveAllConnects = async function() {
+                if (isLoading) return;
+                if (!hasChanges) {
+                    showMessage('No changes to save.', 'info');
+                    return;
+                }
+
+                try {
+                    isLoading = true;
+                    saveBtn.disabled = true;
+                    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+                    // Format as "connects:cost,connects:cost"
+                    const connectsWithCost = connectsPackages.map(pkg => 
+                        `${pkg.connects}:${pkg.connects_cost}`
+                    ).join(',');
+
+                    const formData = new FormData();
+                    formData.append('connects_with_cost', connectsWithCost);
+
+                    const response = await fetch(API.updateConnects, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const data = await response.json();
+
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                        return;
+                    }
+
+                    if (data.success) {
+                        showMessage(data.message || 'Connects updated successfully!', 'success');
+                        // Reload to get updated data
+                        await loadConnects();
+                    } else {
+                        showMessage(data.message || 'Failed to update connects.', 'error');
+                    }
+                } catch (error) {
+                    showMessage('An error occurred. Please try again.', 'error');
+                } finally {
+                    isLoading = false;
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
+                }
+            };
+
+            // ----- OPEN/CLOSE MODAL -----
+            window.openAddModal = function() {
+                addModal.classList.add('active');
+                connectsInput.value = '';
+                costInput.value = '';
+                setTimeout(() => connectsInput.focus(), 100);
+            };
+
+            window.closeAddModal = function() {
+                addModal.classList.remove('active');
+            };
+
+            addModal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeAddModal();
+                }
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && addModal.classList.contains('active')) {
+                    closeAddModal();
+                }
+            });
+
+            // ----- ADD CONNECTS FORM -----
+            addConnectsForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const connects = parseInt(connectsInput.value.trim());
+                const cost = parseInt(costInput.value.trim());
+
+                if (!connects || !cost || connects <= 0 || cost <= 0) {
+                    showMessage('Please enter valid positive numbers.', 'error');
+                    return;
+                }
+
+                // Check for duplicate connects
+                const exists = connectsPackages.some(pkg => pkg.connects === connects);
+                if (exists) {
+                    showMessage(`A package with ${connects} connects already exists.`, 'error');
+                    return;
+                }
+
+                // Add to local list
+                connectsPackages.push({
+                    _id: generateId(),
+                    connects: connects,
+                    connects_cost: cost,
+                    _modified: false,
+                    _isNew: true
+                });
+
+                // Clear form
+                connectsInput.value = '';
+                costInput.value = '';
+                showMessage('Package added! Click Save Changes to persist.', 'success');
+                
+                // Update UI
+                renderConnectsGrid(connectsPackages);
+                closeAddModal();
+                updateSaveButton();
+            });
+
+            // ----- INIT -----
+            loadConnects();
+
+        })();
+    </script>
+
+</body>
+</html>

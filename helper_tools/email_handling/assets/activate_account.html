@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <title>CraftLink · Activate Account</title>
+</head>
+<body style="margin:0; padding:0; background-color:#f4f6f9; font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif; min-height:100vh; display:flex; align-items:center; justify-content:center;">
+
+    <!-- Main Container -->
+    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#f4f6f9; min-height:100vh;">
+        <tr>
+            <td align="center" valign="middle" style="padding:24px;">
+                <table cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:520px; margin:0 auto;">
+                    <tr>
+                        <td align="center" style="padding:0;">
+                            
+                            <!-- Brand Header -->
+                            <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom:12px;">
+                                <tr>
+                                    <td align="center" style="padding:0;">
+                                        <table cellpadding="0" cellspacing="0" border="0" style="display:inline-block;">
+                                            <tr>
+                                                <td style="padding:10px; background:rgba(42,111,111,0.10); border-radius:18px; vertical-align:middle;">
+                                                    <span style="font-size:34px; color:#2a6f6f;">🤝</span>
+                                                </td>
+                                                <td style="padding-left:10px; vertical-align:middle;">
+                                                    <span style="font-size:34px; font-weight:700; letter-spacing:-0.5px; background:linear-gradient(145deg, #1d4f4f, #3d9e9e); -webkit-background-clip:text; background-clip:text; color:transparent;">CraftLink</span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Subhead -->
+                            <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom:24px;">
+                                <tr>
+                                    <td align="center" style="background:rgba(42,111,111,0.06); padding:8px 22px; border-radius:40px; border:1px solid rgba(42,111,111,0.08); backdrop-filter:blur(4px);">
+                                        <span style="font-size:15px; color:#3f5555; font-weight:450;">
+                                            <span style="margin-right:8px; color:#2a6f6f;">✓</span> Activate Your Account
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Card -->
+                            <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background:rgba(255,255,255,0.8); backdrop-filter:blur(8px); border-radius:24px; border:1px solid rgba(45,75,75,0.12); box-shadow:0 12px 40px rgba(0,20,20,0.08); padding:48px 40px 40px; text-align:center; position:relative; overflow:hidden;">
+                                <tr>
+                                    <td style="padding:48px 40px 40px; text-align:center;">
+                                        
+                                        <!-- Shine Effect (Decorative) -->
+                                        <div style="position:absolute; top:0; left:-150%; width:50%; height:100%; background:linear-gradient(120deg, transparent, rgba(255,255,255,0.25), transparent); animation:shineMove 6s infinite ease-in-out; pointer-events:none;"></div>
+                                        
+                                        <!-- Icon -->
+                                        <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom:16px;">
+                                            <tr>
+                                                <td align="center">
+                                                    <table cellpadding="0" cellspacing="0" border="0" style="width:120px; height:120px; background:rgba(42,111,111,0.08); border-radius:50%; border:2px solid rgba(42,111,111,0.12); position:relative;">
+                                                        <tr>
+                                                            <td align="center" valign="middle" style="font-size:48px; color:#2a6f6f;">
+                                                                👤
+                                                                <span style="position:absolute; bottom:4px; right:4px; background:#2a7a5a; color:white; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; border:3px solid rgba(255,255,255,0.8);">✓</span>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                        <!-- Heading -->
+                                        <h2 style="font-size:28px; font-weight:700; color:#1e2b2b; margin:0 0 8px 0; padding:0;">Welcome to CraftLink!</h2>
+
+                                        <!-- Subtitle -->
+                                        <p style="font-size:15px; color:#3f5555; line-height:1.7; max-width:380px; margin:0 auto; padding:0;">
+                                            Please activate your account to start connecting with professionals and accessing all features.
+                                        </p>
+
+                                        <!-- Divider -->
+                                        <div style="width:60px; height:3px; background:linear-gradient(145deg, #1d4f4f, #3d9e9e); border-radius:10px; margin:20px auto;"></div>
+
+                                        <!-- User Email -->
+                                        <div id="user-email-div" style="display:inline-block; padding:8px 20px; background:rgba(42,111,111,0.06); border-radius:30px; font-size:14px; font-weight:500; color:#1e2b2b; font-family:'Courier New', monospace; letter-spacing:0.5px; margin-bottom:20px;">
+                                            {{ user_email }}
+                                        </div>
+
+                                        <!-- Activate Button -->
+                                        <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 20px 0;">
+                                            <tr>
+                                                <td align="center">
+                                                    <a href="{{ activation_link }}" style="display:inline-block; padding:16px 48px; background:linear-gradient(145deg, #1d4f4f, #3d9e9e); color:white; border:none; border-radius:40px; font-size:16px; font-weight:600; text-decoration:none; box-shadow:0 4px 20px rgba(42,111,111,0.25); letter-spacing:0.3px;">
+                                                        ✓ Activate Account
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                        <!-- Info Box -->
+                                        <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background:rgba(42,111,111,0.04); border:1px solid rgba(42,111,111,0.08); border-radius:14px; padding:16px 20px; margin-top:20px; text-align:left;">
+                                            <tr>
+                                                <td style="padding:16px 20px;">
+                                                    <table cellpadding="0" cellspacing="0" border="0">
+                                                        <tr>
+                                                            <td style="vertical-align:top; padding-right:12px;">
+                                                                <span style="color:#2a6f6f; font-size:18px;">ℹ️</span>
+                                                            </td>
+                                                            <td style="font-size:13px; color:#3f5555; line-height:1.6;">
+                                                                <strong style="color:#1e2b2b;">Why activate?</strong> Activating your account verifies your email address and unlocks the full CraftLink experience, including messaging, job posting, and finding talent.
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                        <!-- Expiry Note -->
+                                        <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:16px;">
+                                            <tr>
+                                                <td align="center" style="display:inline-block; padding:6px 16px; border-radius:30px; background:rgba(42,111,111,0.04); font-size:12px; color:#6b8a8a;">
+                                                    <span style="color:#3d8f8f;">⏰</span> This activation link expires in 15 minutes.
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                        <!-- Footer Text -->
+                                        <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:20px; border-top:1px solid rgba(45,75,75,0.12); padding-top:20px;">
+                                            <tr>
+                                                <td align="center" style="font-size:12px; color:#6b8a8a; line-height:1.6;">
+                                                    If you didn't create an account with CraftLink, please ignore this email.
+                                                    <br />
+                                                    &copy; 2026 CraftLink. All rights reserved.
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>
