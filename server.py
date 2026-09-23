@@ -9,6 +9,12 @@ from quart_auth import Unauthorized
 
 from helper_tools.blueprint_registration import register_all_blueprints
 
+import os
+
+from dotenv import load_dotenv
+load_dotenv(override=True)
+
+DEV_MODE = os.getenv("DEV_MODE", "").strip()
 
 @web_app.before_serving
 async def startup():
@@ -43,8 +49,11 @@ async def handle_unauthorized_users(e):
     return redirect(url_for('timezone_bp.welcome_page'))
 
 
-app = web_app
+if DEV_MODE == "1":
+    if __name__ == "__main__":
 
-#if __name__ == "__main__":
+        web_app.run("localhost", 5000)
 
-#    web_app.run("localhost", 5000)
+else:
+    # Expose the ASGI app for production
+    app = web_app.sio_quart_app
