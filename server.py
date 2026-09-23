@@ -43,5 +43,8 @@ async def handle_unauthorized_users(e):
     return redirect(url_for('timezone_bp.welcome_page'))
 
 
-if __name__ == "__main__":
-    web_app.run("localhost", 5000)
+app = web_app
+
+#if __name__ == "__main__":
+
+#    web_app.run("localhost", 5000)
