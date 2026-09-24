@@ -59,6 +59,12 @@ async def get_job_postings():
 
         user = await get_current_user()
 
+        if not user:
+            return jsonify({
+                "success" :False,
+                "message" : "You must be logged in to view job postings"
+            })
+
         if user.account_type == "client":
 
             job_postings_ = await sess.execute(

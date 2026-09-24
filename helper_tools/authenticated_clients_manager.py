@@ -9,49 +9,37 @@ from functools import wraps
 
 from app_db_models.user_model import UserTable
 
-from app_factory import web_app
-
 from sqlalchemy import select
 
-import typing as t
 
-
-async def get_current_user() -> UserTable|t.Any:
+async def get_current_user() -> UserTable|None:
         
-    async with web_app.app_context():
+    async with make_session() as sess:
+
+        if current_user.auth_id is not None:
         
-        async with make_session() as sess:
+            try:
+                user = await sess.scalar(
+                    select(UserTable)
+                    .where(
+                        UserTable.id == int(current_user.auth_id),
+                        UserTable.account_status == "active"
+                    )
+                )                  
+                
+                if not user:
+                    print("client not logged in")
+                    return None
+                return user
+                
+            except Exception as e:
+                
+                print("unable to grab the currently logged in client")
+                print(f"Exception = {e}")
 
-            if current_user.auth_id is not None:
-            
-                try:
-                    user = await sess.scalar(
-                        select(UserTable)
-                        .where(
-                            UserTable.id == int(current_user.auth_id),
-                            UserTable.account_status == "active"
-                        )
-                    )                  
-                    
-                    if not user:
-                        print("client not logged in")
-                        return redirect(url_for('timezone_bp.welcome_page'))
-                    
-                    print("grabbed the current user🎉🎉")
-                    
-                except Exception as e:
-                    
-                    print("unable to grab the currently logged in client")
-                    print(f"Exception = {e}")
-
-                    user = None
-                    
-                    return redirect(url_for('timezone_bp.welcome_page'))
-            else:
-                return redirect(url_for('timezone_bp.welcome_page'))
-        
-    return user
-
+                return None
+        else:
+            return None
 
 
 def login_required(func):

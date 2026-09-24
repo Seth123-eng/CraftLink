@@ -67,17 +67,19 @@ def encode_with_itsdangerous_timed(value) -> str|None:
         return None
 
 
-def decode_with_itsdangerous_timed(value) -> str|None:
+def decode_with_itsdangerous_timed(
+        value:str, max_age:int=3600
+) -> str|None:
 
     try:
         decoded = timed_serializer.loads(
             s=value,
-            max_age=900 #15 mins
+            max_age=max_age
         )
 
         re_decoded = timed_serializer.loads(
             s=decoded,
-            max_age=300 #5 mins
+            max_age=max_age
         )
         
         return re_decoded
