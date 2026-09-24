@@ -23,7 +23,7 @@ MAIL_PASSWORD = os.getenv("MAIL_PASSWORD", "").strip()
 
 
 async def send_email_link(
-        email:str, reason:str, link:str|None=None, max_retries:int=3,
+        email:str, reason:str, link:str|None=None, max_retries:int=8,
         user_name:str|None=None
 ) -> None:
 

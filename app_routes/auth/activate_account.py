@@ -108,8 +108,14 @@ async def activate_account(user_id_):
 
         user_id = decode_with_itsdangerous_timed(user_id_)
 
+        activation_link = await get_activation_link()
+
         if not user_id:
-            return
+            return await render_template(
+                "activate_account/activate_account_page.html",
+                activation_link=activation_link,
+                info="Activation Link Expired or Invalid!"
+            )
 
         async with make_session() as sess:
 
@@ -134,8 +140,6 @@ async def activate_account(user_id_):
                 except Exception as e:
                     print(f"Error = {e}")
                     await sess.rollback()
-
-                    activation_link = await get_activation_link()
                     
                     return await render_template(
                         "activate_account/activate_account_page.html",
