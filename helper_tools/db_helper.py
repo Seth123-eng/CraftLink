@@ -12,9 +12,14 @@ load_dotenv(override=True)
 class Base(DeclarativeBase):
     pass
 
+DATABASE_URI=os.getenv("DATABASE_URI", "").strip()
+
+if DATABASE_URI.startswith("postgres://"):
+    DATABASE_URI.replace("postgres://", "postgresql+asyncpg://")
+
 
 engine=create_async_engine(
-    url=os.getenv("DATABASE_URI", "").strip(),
+    url=DATABASE_URI,
     echo=False
 )
 
